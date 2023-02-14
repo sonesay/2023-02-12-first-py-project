@@ -17,4 +17,7 @@ curl --request GET \
   --header 'Content-Type: application/json' \
   --url https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/RLOAY7BTCBDTJBTLVU3JEOODB4/revision
 	
-	
+curl --request GET \
+  --header 'Authorization: Bearer TB7AST8FPLI9N1EA0AJCBHVOC694343Kmf6XiFTdlDld2XZBO7vikH0Mm4d4QHPLtMRASY08' \
+  --header 'Content-Type: application/json' \
+  --url https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/RLOAY7BTCBDTJBTLVU3JEOODB4
