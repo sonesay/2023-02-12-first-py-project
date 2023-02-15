@@ -6,3 +6,5 @@
 #         elem['content'] = elem['content']
 # cursor.execute("UPDATE news_article_syncs SET body2=? WHERE id=?", (content_elements_str, row['id'],))
 
+
+# cursor.execute("SELECT * FROM news_article_syncs WHERE category = category ORDER BY page DESC LIMIT 1;")
