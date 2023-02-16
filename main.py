@@ -7,6 +7,5 @@ if __name__ == '__main__':
     api_request = APIRequest(api_key)
 
     scraper = WebScraper()
-    scraper.process_english_categories()
-
-    # scraper.scrape_full_article_page()
+    # scraper.process_english_categories()
+    scraper.scrape_full_article_page()
