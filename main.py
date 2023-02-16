@@ -1,11 +1,6 @@
 import sys
-from collections import namedtuple
-from html2ans.default import Html2Ans
 from helpers.api_request import APIRequest
 from helpers.web_scrapper import WebScraper
-from models.story import Headlines, Story
-import json
-import sqlite3
 
 if __name__ == '__main__':
     api_key = 'TB7AST8FPLI9N1EA0AJCBHVOC694343Kmf6XiFTdlDld2XZBO7vikH0Mm4d4QHPLtMRASY08'
@@ -15,7 +10,7 @@ if __name__ == '__main__':
     scraper.process_english_categories()
 
     sys.exit()
-    
+
     conn = sqlite3.connect(r'C:\Users\sone\Desktop\mts6\php\php8-xdebug3-docker\web\database\database.sqlite')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()

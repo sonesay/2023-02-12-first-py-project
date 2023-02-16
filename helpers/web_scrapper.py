@@ -14,11 +14,12 @@ class WebScraper:
         for category, url in english_categories.items():
             highest_page = self.db_conn.check_news_article_syncs(category)
             if highest_page is not None:
-                self.scrape_html_from_url(category, url, highest_page, 20)
+                self.get_news_article_references_from_url(category, url, highest_page, 20)
             else:
-                self.scrape_html_from_url(category, url)
+                self.get_news_article_references_from_url(category, url)
 
-    def scrape_html_from_url(self, category: str, url: str, page: int = 0, offset: int = 0) -> BeautifulSoup:
+    def get_news_article_references_from_url(self, category: str, url: str, page: int = 0,
+                                             offset: int = 0) -> BeautifulSoup:
         full_url = f"{url}&page={page}"
         if offset > 0:
             full_url += f"&offset={offset}"
@@ -54,24 +55,15 @@ class WebScraper:
         if show_more_results_button is not None:
             offset = 20
             print(f"Found 'Show more news' button, going to next page {page + 1} with offset {offset}...")
-            self.scrape_html_from_url(category, url, page + 1, offset)
+            self.get_news_article_references_from_url(category, url, page + 1, offset)
 
-        return soup
-
-    def fetch_page(self, url):
-        response = requests.get(url)
-        return response.text
-
-    def parse_html(self, html):
-        soup = BeautifulSoup(html, 'html.parser')
-        # add your parsing logic here
         return soup
 
     def check_news_article_syncs(self, category):
         # Execute query to check news_article_syncs table for highest page number
-        self.cursor.execute(
+        self.db_conn.cursor.execute(
             f"SELECT * FROM news_article_syncs WHERE category = '{category}' ORDER BY page DESC LIMIT 1;")
-        row = self.cursor.fetchone()
+        row = self.db_conn.cursor.fetchone()
         if row is not None:
             # Return highest page number
             return row[1]
