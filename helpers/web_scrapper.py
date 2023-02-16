@@ -47,7 +47,15 @@ class WebScraper:
 
             print(f"Processed article: {published_date} - {title} - by {author} ")
 
-        print(f"Processed {category} category with data: {soup}")
+        print(f"Processed {category} category with data: {len(articles)} articles")
+
+        # Check if there are more articles to process
+        show_more_results_button = soup.select_one("#show-more-results-button a")
+        if show_more_results_button is not None:
+            offset = 20
+            print(f"Found 'Show more news' button, going to next page {page + 1} with offset {offset}...")
+            self.scrape_html_from_url(category, url, page + 1, offset)
+
         return soup
 
     def fetch_page(self, url):

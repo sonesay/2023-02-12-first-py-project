@@ -27,7 +27,7 @@ class DbConn:
         if row is not None:
             # update existing record
             self.cursor.execute(
-                f"UPDATE news_article_syncs SET article_datetime = ?, article_credits = ?, updated_at = ? WHERE id = ?",
+                f"UPDATE news_article_syncs SET published_date = ?, author = ?, updated_at = ? WHERE id = ?",
                 (published_date, author, now, row[0])
             )
             self.conn.commit()
