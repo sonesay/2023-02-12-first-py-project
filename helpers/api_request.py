@@ -1,12 +1,15 @@
 import json
 import requests
+import os
+from dotenv import load_dotenv
 
 
 class APIRequest:
-    def __init__(self, api_key):
-        self.api_key = api_key
+    def __init__(self):
+        load_dotenv()  # load the .env file
+        self.api_key = os.environ.get('API_KEY')
         self.headers = {
-            'Authorization': f'Bearer {api_key}',
+            'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json'
         }
 

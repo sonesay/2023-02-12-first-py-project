@@ -1,3 +1,4 @@
 .idea/
 helpers/__pycache__/
 models/__pycache__/
+.env
