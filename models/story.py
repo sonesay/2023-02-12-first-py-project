@@ -1,18 +1,15 @@
-import random
-import string
 import html
+from helpers.arc_id_generator import generate_arc_id
+
 
 class Story:
     def __init__(self, type, version, canonical_website, headlines):
-        self._id = self.generate_unique_id()
+        self._id = generate_arc_id(canonical_website, headlines.basic)
         self.type = type
         self.version = version
         self.canonical_website = canonical_website
         self.headlines = headlines
         self.content_elements = []
-
-    def generate_unique_id(self):
-        return ''.join(random.choices(string.ascii_uppercase, k=26))
 
 
 class Headlines:
