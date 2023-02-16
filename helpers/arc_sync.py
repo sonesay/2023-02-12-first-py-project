@@ -30,6 +30,8 @@ class ArcSync:
             thumbnail_div = full_article_soup.find("div", class_="field-thumbnail-override")
             feature_media_url = thumbnail_div.find('img')['src'] if thumbnail_div else None
 
+            self.api_request.post_to_arc_image_endpoint(feature_media_url);
+
             # Remove the feature media div from the body
             if thumbnail_div:
                 thumbnail_div.decompose()

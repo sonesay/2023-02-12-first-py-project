@@ -1,0 +1,35 @@
+{
+  "_id": "3GQNRROHMRH6PAFU63PT5APMEM",
+  "address": {},
+  "auth": {
+    "1": "6b31b88c572402432785896dfc8445408be2fd97b40de9a0961069a80620438a"
+  },
+  "created_date": "2023-02-16T06:27:48Z",
+  "credits": {
+    "affiliation": []
+  },
+  "height": 1024,
+  "image_type": "photograph",
+  "last_updated_date": "2023-02-16T06:27:48Z",
+  "licensable": false,
+  "owner": {
+    "id": "sandbox.whakaatamaori",
+    "sponsored": false
+  },
+  "source": {
+    "additional_properties": {
+      "editor": "photo center"
+    },
+    "edit_url": "https://sandbox.whakaatamaori.arcpublishing.com/photo/3GQNRROHMRH6PAFU63PT5APMEM",
+    "system": "photo center"
+  },
+  "subtitle": "HEADLINE (IPTC RECORD IN ARC)",
+  "taxonomy": {
+    "associated_tasks": []
+  },
+  "type": "image",
+  "url": "https://cloudfront-ap-southeast-2.images.arcpublishing.com/sandbox.whakaatamaori/3GQNRROHMRH6PAFU63PT5APMEM.png",
+  "version": "0.10.3",
+  "width": 1024,
+  "syndication": {}
+}

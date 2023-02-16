@@ -1,0 +1,51 @@
+{
+    "_id": "3GQNRROHMRH6PAFU63PT5APMEM",
+    "additional_properties": {
+        "fullSizeResizeUrl": "/resizer/-ImFMKYR1fH6HBAI9wlBwe7hSPM=/arc-photo-whakaatamaori/ap-se-2-sandbox/public/3GQNRROHMRH6PAFU63PT5APMEM.png",
+        "galleries": [],
+        "ingestionMethod": "manual",
+        "mime_type": "image/png",
+        "originalName": "sone_Maori_warrior_in_unreal_engine_b103bc98-4c3d-4242-9a7d-6615814f4ba1.png",
+        "originalUrl": "https://cloudfront-ap-southeast-2.images.arcpublishing.com/sandbox.whakaatamaori/3GQNRROHMRH6PAFU63PT5APMEM.png",
+        "owner": "sonesay.inthavong@maoritelevision.com",
+        "proxyUrl": "/resizer/-ImFMKYR1fH6HBAI9wlBwe7hSPM=/arc-photo-whakaatamaori/ap-se-2-sandbox/public/3GQNRROHMRH6PAFU63PT5APMEM.png",
+        "published": true,
+        "resizeUrl": "/resizer/-ImFMKYR1fH6HBAI9wlBwe7hSPM=/arc-photo-whakaatamaori/ap-se-2-sandbox/public/3GQNRROHMRH6PAFU63PT5APMEM.png",
+        "restricted": false,
+        "thumbnailResizeUrl": "/resizer/9_wVF6F6GAvIeeDxDT1UNXqXfGI=/300x0/arc-photo-whakaatamaori/ap-se-2-sandbox/public/3GQNRROHMRH6PAFU63PT5APMEM.png",
+        "version": 0,
+        "template_id": 413
+    },
+    "address": {},
+    "auth": {
+        "1": "6b31b88c572402432785896dfc8445408be2fd97b40de9a0961069a80620438a"
+    },
+    "created_date": "2023-02-16T06:27:48Z",
+    "credits": {
+        "affiliation": []
+    },
+    "height": 1024,
+    "image_type": "photograph",
+    "last_updated_date": "2023-02-16T06:27:48Z",
+    "licensable": false,
+    "owner": {
+        "id": "sandbox.whakaatamaori",
+        "sponsored": false
+    },
+    "source": {
+        "additional_properties": {
+            "editor": "photo center"
+        },
+        "edit_url": "https://sandbox.whakaatamaori.arcpublishing.com/photo/3GQNRROHMRH6PAFU63PT5APMEM",
+        "system": "photo center"
+    },
+    "subtitle": "HEADLINE (IPTC RECORD IN ARC)",
+    "taxonomy": {
+        "associated_tasks": []
+    },
+    "type": "image",
+    "url": "https://cloudfront-ap-southeast-2.images.arcpublishing.com/sandbox.whakaatamaori/3GQNRROHMRH6PAFU63PT5APMEM.png",
+    "version": "0.10.3",
+    "width": 1024,
+    "syndication": {}
+}
