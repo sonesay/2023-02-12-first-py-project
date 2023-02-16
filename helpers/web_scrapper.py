@@ -1,72 +1,62 @@
-from datetime import datetime
-import requests
-from bs4 import BeautifulSoup
+import json
+from collections import namedtuple
+from html2ans.default import Html2Ans
 from helpers.db_conn import DbConn
 from helpers.site_categories import SiteCategories
+from helpers.web_scrapper_article_reference import WebScraperArticleReference
+from models.story import Headlines, Story
 
 
 class WebScraper:
     def __init__(self):
         self.db_conn = DbConn()
+        self.article_reference_scraper = WebScraperArticleReference(self.db_conn)
 
     def process_english_categories(self):
         english_categories = SiteCategories.get_english_categories(self)
         for category, url in english_categories.items():
             highest_page = self.db_conn.check_news_article_syncs(category)
             if highest_page is not None:
-                self.get_news_article_references_from_url(category, url, highest_page, 20)
+                self.article_reference_scraper.get_news_article_references_from_url(category, url, highest_page, 20)
             else:
-                self.get_news_article_references_from_url(category, url)
+                self.article_reference_scraper.get_news_article_references_from_url(category, url)
 
-    def get_news_article_references_from_url(self, category: str, url: str, page: int = 0,
-                                             offset: int = 0) -> BeautifulSoup:
-        full_url = f"{url}&page={page}"
-        if offset > 0:
-            full_url += f"&offset={offset}"
-        print(f"full_url: {full_url}")
-        response = requests.get(full_url)
-        html = response.text
-        soup = BeautifulSoup(html, "html.parser")
-        articles = soup.find_all("article")
-        print(f"Found {len(articles)} articles")
-        for article in articles:
-            # process the article tag here
-            title = article.find("h3", class_="node-title").text.strip().replace("\n", "")
-            # extract credits
-            credits_div = article.find("div", class_="credits")
-            author = credits_div.text.strip() if credits_div else ""
-            if author.startswith('By '):
-                author = author.replace('By ', '', 1)
-            # extract datetime
-            datetime_tag = article.find("time", class_="time-ago")
-            published_date = datetime.strptime(datetime_tag['datetime'], '%Y-%m-%dT%H:%M:%S%z').strftime(
-                '%Y-%m-%d %H:%M:%S')
-            # extract article link
-            link = article.find("a", itemprop="mainEntityOfPage")['href']
+    def scrape_full_article_page(self):
+        cursor = self.db_conn.conn.cursor()
+        cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NOT NULL ORDER BY id ASC LIMIT 1;")
+        rows = cursor.fetchall()
+        column_names = [d[0] for d in cursor.description]
 
-            self.db_conn.set_article(category, title, published_date, author, page, full_url, link)
+        for row in rows:
+            print(row)
+            print(row['id'])
+            parser = Html2Ans()
+            content_elements = parser.generate_ans(row['body'])
+            content_elements = [elem for elem in content_elements if elem['type'] != 'image']
+            print(content_elements)
+            content_elements_str = str(content_elements)
 
-            print(f"Processed article: {published_date} - {title} - by {author} ")
+            # Create a namedtuple to represent the row for convenience
+            # (Optional, but recommended)
+            NewsArticle = namedtuple('NewsArticle', column_names)
+            news_article = NewsArticle(*row)
 
-        print(f"Processed {category} category with data: {len(articles)} articles")
+            # Delete any existing arc stories with matching id
+            response_delete = self.api_request.delete_arc_story(news_article)
 
-        # Check if there are more articles to process
-        show_more_results_button = soup.select_one("#show-more-results-button a")
-        if show_more_results_button is not None:
-            offset = 20
-            print(f"Found 'Show more news' button, going to next page {page + 1} with offset {offset}...")
-            self.get_news_article_references_from_url(category, url, page + 1, offset)
+            headlines = Headlines(news_article.title)
+            story = Story("story", "0.10.9", "teaomaori", headlines)
+            story.content_elements = content_elements;
 
-        return soup
+            response_post = self.api_request.post_to_arc_migration_content(
+                "https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story", story)
 
-    def check_news_article_syncs(self, category):
-        # Execute query to check news_article_syncs table for highest page number
-        self.db_conn.cursor.execute(
-            f"SELECT * FROM news_article_syncs WHERE category = '{category}' ORDER BY page DESC LIMIT 1;")
-        row = self.db_conn.cursor.fetchone()
-        if row is not None:
-            # Return highest page number
-            return row[1]
-        else:
-            # No rows found
-            return None
+            # Extract the id from the response
+            response_data = json.loads(response_post)
+            arc_id = response_data['id']
+
+            # Update the new_article_syncs table with the arc_id
+            cursor.execute("UPDATE news_article_syncs SET arc_id=? WHERE id=?", (arc_id, row['id']))
+
+        self.db_conn.conn.commit()
+        cursor.close()
