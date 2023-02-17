@@ -32,7 +32,10 @@ class APIRequest:
     def post_to_arc_image_endpoint(self, image_url):
         data = {
             "additional_properties": {
-                "originalUrl": image_url
+                "originalUrl": image_url,
+                "keywords": [
+                    "migration"
+                ],
             },
         }
         image = Image(image_url, data)

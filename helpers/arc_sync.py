@@ -45,7 +45,7 @@ class ArcSync:
 
             sys.exit
 
-    def test_delete(self):
+    def delete_migration_test_images(self):
         migration_images = self.api_request.get_migration_test_images()
         images_data = json.loads(migration_images)
         ids = [_id['_id'] for _id in images_data]
