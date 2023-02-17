@@ -26,7 +26,7 @@ curl --request POST \
   --header 'Authorization: Bearer TB7AST8FPLI9N1EA0AJCBHVOC694343Kmf6XiFTdlDld2XZBO7vikH0Mm4d4QHPLtMRASY08' \
   --header 'Content-Type: application/json' \
   --data '{
-    "_id": "YIELYTBJIHH3FTKOAMDRHRP5SI"
+    "_id": "YIELYTBJIHH3FTKOAMDRHRP5SI",
     "version": "0.10.7",
     "type": "image",
     "owner": {
@@ -44,7 +44,7 @@ curl --request POST \
   --header 'Authorization: Bearer TB7AST8FPLI9N1EA0AJCBHVOC694343Kmf6XiFTdlDld2XZBO7vikH0Mm4d4QHPLtMRASY08' \
   --header 'Content-Type: application/json' \
   --data '{
-    "_id": "FQNUIWSRCQDDWRFBZFUYRRNZU4"
+    "_id": "FQNUIWSRCQDDWRFBZFUYRRNZU4",
     "version": "0.10.7",
     "type": "image",
     "owner": {
