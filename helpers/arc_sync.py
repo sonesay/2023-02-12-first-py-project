@@ -30,7 +30,7 @@ class ArcSync:
             thumbnail_div = full_article_soup.find("div", class_="field-thumbnail-override")
             feature_media_url = thumbnail_div.find('img')['src'] if thumbnail_div else None
 
-            self.api_request.post_to_arc_image_endpoint(feature_media_url);
+            feature_media_upload_response = self.api_request.post_to_arc_image_endpoint(feature_media_url);
 
             # Remove the feature media div from the body
             if thumbnail_div:
@@ -44,3 +44,15 @@ class ArcSync:
             print(content_elements)
 
             sys.exit
+
+    def test_delete(self):
+        migration_images = self.api_request.get_migration_test_images()
+        images_data = json.loads(migration_images)
+        ids = [_id['_id'] for _id in images_data]
+        for image_id in ids:
+            response = self.api_request.delete_arc_image(image_id)
+            if response == '':
+                print(f"Image with ID {image_id} has been successfully deleted.")
+            else:
+                print(f"Failed to delete image with ID {image_id}.")
+                print(f"Response from API: {response}")

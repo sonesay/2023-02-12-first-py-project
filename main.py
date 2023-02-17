@@ -14,4 +14,6 @@ if __name__ == '__main__':
     # scraper.process_english_categories()
     # scraper.scrape_full_article_page()
 
-    arc_sync.sync_to_arc()
+    # arc_sync.sync_to_arc()
+
+    arc_sync.test_delete()

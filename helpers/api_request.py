@@ -40,3 +40,13 @@ class APIRequest:
         content_json = json.dumps(image, default=lambda o: o.__dict__)
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         return response.text
+
+    def delete_arc_image(self, image_id):
+        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos/{image_id}'
+        response = requests.delete(end_point, headers=self.headers, verify=True)
+        return response.text
+
+    def get_migration_test_images(self):
+        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos?keywords=migration'
+        response = requests.get(end_point, headers=self.headers, verify=True)
+        return response.text
