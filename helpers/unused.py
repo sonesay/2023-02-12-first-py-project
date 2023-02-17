@@ -71,3 +71,22 @@ import six
 #     return six.text_type(base64.b32encode(uuid_object.bytes), encoding="utf-8").replace("=", "")  # to remove padding
 #
 #
+
+
+
+curl --request POST \
+  --url https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos \
+  --header 'Authorization: Bearer TB7AST8FPLI9N1EA0AJCBHVOC694343Kmf6XiFTdlDld2XZBO7vikH0Mm4d4QHPLtMRASY08' \
+  --header 'Content-Type: multipart/form-data' \
+  --form 'ans={
+    "version": "0.10.7",
+    "type": "image",
+    "owner": {
+        "id": "sandbox.whakaatamaori"
+    },
+    "additional_properties": {
+        "originalUrl": "https://www.teaomaori.news/sites/default/files/styles/video_player_placeholder_image/public/news_article/Napier_Angus_Dreaver.jpeg"
+    }
+}'
+
+
