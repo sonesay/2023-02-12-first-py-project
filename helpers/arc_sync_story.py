@@ -1,0 +1,58 @@
+import json
+import os
+import sys
+from collections import namedtuple
+from bs4 import BeautifulSoup
+from html2ans.default import Html2Ans
+
+from helpers.arc_id_generator import generate_arc_id
+from models.promo_items import PromoItems
+from models.story import Headlines, Story
+from helpers.api_request import APIRequest
+from helpers.db_conn import DbConn
+
+
+class ArcSyncStory:
+    def __init__(self):
+        self.db_conn = DbConn()
+        self.api_request = APIRequest()
+
+    def sync_story(self, row, column_names):
+        cursor = self.db_conn.conn.cursor()
+        row_dict = {column_names[i]: value for i, value in enumerate(row)}
+        NewsArticle = namedtuple('NewsArticle', column_names)
+        news_article = NewsArticle(*row)
+
+        headlines = Headlines(news_article.title)
+        story = Story("story", "0.10.9", "teaomaori", headlines)
+
+        parser = Html2Ans()
+        full_article_soup = BeautifulSoup(row_dict['body'], 'html.parser')
+
+        thumbnail_div = full_article_soup.find("div", class_="field-thumbnail-override")
+        feature_media_url = thumbnail_div.find('img')['src'] if thumbnail_div else None
+        arc_id_for_image = generate_arc_id(os.environ.get('API_KEY'), feature_media_url)
+        feature_media_upload_response = self.api_request.save_arc_image(arc_id_for_image, feature_media_url)
+        if thumbnail_div:
+            thumbnail_div.decompose()
+            story.promo_items = PromoItems(arc_id_for_image).to_dict()
+
+        body_div = full_article_soup.find("div", class_="field-body", itemprop="articleBody")
+        body_html = ''.join(str(c) for c in body_div.contents)
+        content_elements = parser.generate_ans(str(body_html))
+        content_elements = [elem for elem in content_elements if elem['type'] != 'image']
+
+        response_delete = self.api_request.delete_arc_story(news_article)
+
+        story.content_elements = content_elements;
+        response_post = self.api_request.create_arc_story(story)
+        response_data = json.loads(response_post)
+
+        if 'id' in response_data:
+            arc_id = response_data['id']
+            cursor.execute("UPDATE news_article_syncs SET arc_id=? WHERE id=?", (arc_id, row_dict['id']))
+            print(f"Story created successfully with ID {arc_id}")
+            print(f"Link: {row_dict['link']}")
+        else:
+            error_message = response_data.get('message', 'Unknown error')
+            print(f"Failed to create story: {error_message}")

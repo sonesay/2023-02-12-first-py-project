@@ -10,6 +10,7 @@ class Story:
         self.canonical_website = canonical_website
         self.headlines = headlines
         self.content_elements = []
+        self.promo_items = []
 
 
 class Headlines:

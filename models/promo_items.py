@@ -1,9 +1,9 @@
 class PromoItems:
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, arc_id):
+        self.id = arc_id
         self.type = "reference"
         self.referent = {
-            "id": id,
+            "id": arc_id,
             "type": "image",
             "provider": "",
             "referent_properties": {}

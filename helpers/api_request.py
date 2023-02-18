@@ -30,7 +30,7 @@ class APIRequest:
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         return response.text
 
-    def post_to_arc_image_endpoint(self, image_url):
+    def save_arc_image(self, arc_id, image_url):
         data = {
             "additional_properties": {
                 "originalUrl": image_url,
@@ -39,7 +39,7 @@ class APIRequest:
                 ],
             },
         }
-        image = Image(image_url, data)
+        image = Image(arc_id, data)
         end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos/{image.get_id()}'
         content_json = json.dumps(image, default=lambda o: o.__dict__)
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)

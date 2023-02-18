@@ -4,8 +4,8 @@ from helpers.arc_id_generator import generate_arc_id
 
 
 class Image:
-    def __init__(self, file_name, data):
-        self._id = generate_arc_id(os.environ.get('API_KEY'), file_name)
+    def __init__(self, arc_id, data):
+        self._id = arc_id
         self.type = "image"
         self.version = "0.10.7"
 
