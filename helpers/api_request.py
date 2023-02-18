@@ -24,7 +24,8 @@ class APIRequest:
             # Handle the case where arc_id is None
             return False
 
-    def post_to_arc_migration_content(self, end_point, content):
+    def create_arc_story(self, content):
+        end_point = "https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story"
         content_json = json.dumps(content, default=lambda o: o.__dict__)
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         return response.text
