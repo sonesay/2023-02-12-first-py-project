@@ -8,7 +8,9 @@ class WebScraperArticleBody:
 
     def scrap_article_body_contents(self):
         cursor = self.db_conn.conn.cursor()
-        cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NULL ORDER BY id ASC LIMIT 1;")
+        cursor.execute(
+            "SELECT * FROM news_article_syncs WHERE link = 'https://www.teaomaori.news/push-more-maori-and-pasifika-wahine-aviation'")
+        # cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NULL ORDER BY id ASC LIMIT 10;")
         rows = cursor.fetchall()
         column_names = [d[0] for d in cursor.description]
 

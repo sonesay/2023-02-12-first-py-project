@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from html2ans.default import Html2Ans
 
 from helpers.arc_id_generator import generate_arc_id
+from models.content_element_image import ContentElementImage
 from models.promo_items import PromoItems
 from models.story import Headlines, Story
 from helpers.api_request import APIRequest
@@ -40,7 +41,15 @@ class ArcSyncStory:
         body_div = full_article_soup.find("div", class_="field-body", itemprop="articleBody")
         body_html = ''.join(str(c) for c in body_div.contents)
         content_elements = parser.generate_ans(str(body_html))
-        content_elements = [elem for elem in content_elements if elem['type'] != 'image']
+
+        # Loop through the content elements and replace images with references to Arc
+        for i in range(len(content_elements)):
+            if content_elements[i]['type'] == 'image':
+                image_url = content_elements[i]['url']
+                arc_id_for_image = generate_arc_id(os.environ.get('API_KEY'), image_url)
+                feature_media_upload_response = self.api_request.save_arc_image(arc_id_for_image, image_url)
+                content_element_image = ContentElementImage(arc_id_for_image)
+                content_elements[i] = content_element_image.__dict__
 
         response_delete = self.api_request.delete_arc_story(news_article)
 
