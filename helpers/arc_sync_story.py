@@ -40,8 +40,15 @@ class ArcSyncStory:
         if not story.promo_items:
             del story.promo_items
 
+        field_video_div = full_article_soup.find("div", class_="field-video")
+
         body_div = full_article_soup.find("div", class_="field-body", itemprop="articleBody")
         body_html = ''.join(str(c) for c in body_div.contents)
+
+        if field_video_div:
+            field_video_html = str(field_video_div)
+            body_html = field_video_html + body_html
+
         content_elements = parser.generate_ans(str(body_html))
 
         # Loop through the content elements and replace images with references to Arc
