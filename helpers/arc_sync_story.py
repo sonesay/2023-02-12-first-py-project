@@ -37,7 +37,9 @@ class ArcSyncStory:
         if thumbnail_div:
             thumbnail_div.decompose()
             story.promo_items = PromoItems(arc_id_for_image).to_dict()
-
+        if not story.promo_items:
+            del story.promo_items
+            
         body_div = full_article_soup.find("div", class_="field-body", itemprop="articleBody")
         body_html = ''.join(str(c) for c in body_div.contents)
         content_elements = parser.generate_ans(str(body_html))
