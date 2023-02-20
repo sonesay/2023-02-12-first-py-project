@@ -1,10 +1,14 @@
+import os
 import sqlite3
 from datetime import datetime
+
+from dotenv import load_dotenv
 
 
 class DbConn:
     def __init__(self):
-        self.conn = sqlite3.connect(r'C:\Users\sone\Desktop\mts6\php\php8-xdebug3-docker\web\database\database.sqlite')
+        load_dotenv()  # load the .env file
+        self.conn = sqlite3.connect(os.environ.get('DATABASE_FILE'))
         self.cursor = self.conn.cursor()
 
     def check_news_article_syncs(self, category):
