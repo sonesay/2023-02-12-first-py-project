@@ -12,6 +12,9 @@ class Story:
         self.content_elements = []
         self.promo_items = []
 
+    def get_id(self):
+        return self._id
+
 
 class Headlines:
     def __init__(self, basic):

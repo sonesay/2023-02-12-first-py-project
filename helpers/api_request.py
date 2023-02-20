@@ -50,6 +50,11 @@ class APIRequest:
         response = requests.delete(end_point, headers=self.headers, verify=True)
         return response.text
 
+    def delete_arc_story(self, arc_id):
+        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/{arc_id}'
+        response = requests.delete(end_point, headers=self.headers, verify=True)
+        return response.text
+
     def get_migration_test_images(self):
         end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos?keywords=migration'
         response = requests.get(end_point, headers=self.headers, verify=True)
