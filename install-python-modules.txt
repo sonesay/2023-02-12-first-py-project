@@ -1,1 +1,3 @@
 pip install requests-oauthlib
+pip install html2ans
+pip install python-dotenv
