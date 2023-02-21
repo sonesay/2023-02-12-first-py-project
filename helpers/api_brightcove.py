@@ -1,4 +1,5 @@
 from oauthlib.oauth2 import BackendApplicationClient
+from requests_oauthlib import OAuth2Session
 import requests
 
 
@@ -10,15 +11,14 @@ class APIBrightcove:
         self.base_url = 'https://cms.api.brightcove.com/v1'
 
         self.client = BackendApplicationClient(client_id=self.client_id)
+        self.oauth_session = OAuth2Session(client=self.client)
 
     def authorize(self):
         token_url = 'https://oauth.brightcove.com/v4/access_token'
 
-        self.client.prepare_request_body()
-        token_response = requests.post(token_url, auth=(self.client_id, self.client_secret),
-                                       data=self.client.oauth2session.token)
+        token = self.oauth_session.fetch_token(token_url, auth=(self.client_id, self.client_secret))
 
-        self.access_token = token_response.json()['access_token']
+        self.access_token = token['access_token']
 
     def get_video(self, video_id):
         headers = {'Authorization': f'Bearer {self.access_token}'}

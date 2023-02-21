@@ -3,8 +3,10 @@ import os
 import sys
 from collections import namedtuple
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 from html2ans.default import Html2Ans
 
+from helpers.api_brightcove import APIBrightcove
 from helpers.arc_id_generator import generate_arc_id
 from models.content_element_image import ContentElementImage
 from models.promo_items import PromoItems
@@ -15,8 +17,11 @@ from helpers.db_conn import DbConn
 
 class ArcSyncStory:
     def __init__(self):
+        load_dotenv()
         self.db_conn = DbConn()
         self.api_request = APIRequest()
+        self.api_brightcove = APIBrightcove(os.environ.get('BRIGHTCOVE_CLIENT_API_ID'),
+                                            os.environ.get('BRIGHTCOVE_CLIENT_SECRET'))
 
     def sync_story(self, row, column_names):
         cursor = self.db_conn.conn.cursor()
@@ -45,9 +50,15 @@ class ArcSyncStory:
         body_div = full_article_soup.find("div", class_="field-body", itemprop="articleBody")
         body_html = ''.join(str(c) for c in body_div.contents)
 
-        if field_video_div:
-            field_video_html = str(field_video_div)
-            body_html = field_video_html + body_html
+        # if field_video_div:
+        #     field_video_html = str(field_video_div)
+        #     body_html = field_video_html + body_html
+
+        video_div = full_article_soup.find('video', {'class': 'video-js'})
+        video_id = video_div['data-video-id']
+        print(video_id)
+
+        self.api_brightcove.authorize()
 
         content_elements = parser.generate_ans(str(body_html))
 
