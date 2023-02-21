@@ -20,7 +20,8 @@ class ArcSyncStory:
         load_dotenv()
         self.db_conn = DbConn()
         self.api_request = APIRequest()
-        self.api_brightcove = APIBrightcove(os.environ.get('BRIGHTCOVE_CLIENT_API_ID'),
+        self.api_brightcove = APIBrightcove(os.environ.get('BRIGHTCOVE_ACCOUNT_ID'),
+                                            os.environ.get('BRIGHTCOVE_CLIENT_API_ID'),
                                             os.environ.get('BRIGHTCOVE_CLIENT_SECRET'))
 
     def sync_story(self, row, column_names):
@@ -59,6 +60,8 @@ class ArcSyncStory:
         print(video_id)
 
         self.api_brightcove.authorize()
+
+        video_json = self.api_brightcove.get_video(video_id)
 
         content_elements = parser.generate_ans(str(body_html))
 
