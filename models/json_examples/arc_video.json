@@ -1,0 +1,40 @@
+{
+  "type": "video",
+  "version": "0.8.0",
+  "owner": {
+    "id": "sandbox.arctesting1"
+  },
+  "streams": [
+    {
+      "url": "https://vimeo.com/1141237875.mp4",
+      "stream_type": "mp4"
+    }
+  ],
+  "additional_properties": {
+    "videoCategory": "sample"
+  },
+  "canonical_website": "arc_test1",
+  "websites": {
+    "arc_test1": {}
+  },
+  "taxonomy": {
+    "primary_section": {
+      "type": "reference",
+      "referent": {
+        "id": "/main",
+        "type": "section",
+        "website": "arc_test1"
+      }
+    }
+  },
+  "headlines": {
+    "basic": "a headline"
+  },
+  "promo_items": {
+    "basic": {
+      "type": "image",
+      "url": "https://images.unsplash.com/photo-1654452698901-cf57845dd7a7",
+      "version": "0.8.0"
+    }
+  }
+}

@@ -55,6 +55,17 @@ class APIRequest:
         response = requests.delete(end_point, headers=self.headers, verify=True)
         return response.text
 
+    def get_arc_video(self, arc_id):
+        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/api/v1/ansvideos/{arc_id}'
+        response = requests.get(end_point, headers=self.headers, verify=True)
+        return response.text
+
+    def create_arc_video(self, content):
+        end_point = "https://api.sandbox.whakaatamaori.arcpublishing.com/goldfish/video/v2/import/ans"
+        content_json = json.dumps(content, default=lambda o: o.__dict__)
+        response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
+        return response.text
+
     def get_migration_test_images(self):
         end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos?keywords=migration'
         response = requests.get(end_point, headers=self.headers, verify=True)

@@ -25,3 +25,9 @@ class APIBrightcove:
         headers = {'Authorization': f'Bearer {self.access_token}'}
         response = requests.get(f'{self.base_url}/accounts/{self.account_id}/videos/{video_id}', headers=headers)
         return response.json()
+
+    def get_video_sources(self, video_id):
+        headers = {'Authorization': f'Bearer {self.access_token}'}
+        response = requests.get(f'{self.base_url}/accounts/{self.account_id}/videos/{video_id}/sources',
+                                headers=headers)
+        return response.json()

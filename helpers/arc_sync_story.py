@@ -1,13 +1,17 @@
 import json
 import os
+import re
 import sys
 from collections import namedtuple
+
+import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from html2ans.default import Html2Ans
 
 from helpers.api_brightcove import APIBrightcove
 from helpers.arc_id_generator import generate_arc_id
+from models.arc_video_ans import ArcVideoANS
 from models.content_element_image import ContentElementImage
 from models.promo_items import PromoItems
 from models.story import Headlines, Story
@@ -51,17 +55,35 @@ class ArcSyncStory:
         body_div = full_article_soup.find("div", class_="field-body", itemprop="articleBody")
         body_html = ''.join(str(c) for c in body_div.contents)
 
-        # if field_video_div:
-        #     field_video_html = str(field_video_div)
-        #     body_html = field_video_html + body_html
-
         video_div = full_article_soup.find('video', {'class': 'video-js'})
         video_id = video_div['data-video-id']
         print(video_id)
 
         self.api_brightcove.authorize()
 
-        video_json = self.api_brightcove.get_video(video_id)
+        video_detail = self.api_brightcove.get_video(video_id)
+        # video_name = video_detail['name']
+        video_name = re.sub(r'\W+', ' ', video_detail['name']).strip()
+        video_name = re.sub(r'\s+', '_', video_name)
+
+        video_data = self.api_brightcove.get_video_sources(video_id)
+
+        mp4_data = [d for d in video_data if d.get('container') == 'MP4']
+
+        sorted_mp4_data = sorted(mp4_data, key=lambda d: d.get('encoding_rate', 0), reverse=True)
+
+        highest_quality_url = sorted_mp4_data[0]['src']
+
+        video_ans = ArcVideoANS("sample", "test headline", feature_media_url, highest_quality_url)
+
+        self.api_request.get_arc_video('f3f68db5-2906-4195-bf35-4890a304c047')
+        self.api_request.create_arc_video(video_ans)
+
+        response = requests.get(highest_quality_url)
+        os.makedirs('./videos', exist_ok=True)
+
+        with open(f'./videos/{video_name}', 'wb') as f:
+            f.write(response.content)
 
         content_elements = parser.generate_ans(str(body_html))
 
