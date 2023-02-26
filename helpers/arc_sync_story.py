@@ -49,8 +49,6 @@ class ArcSyncStory:
         if thumbnail_div:
             thumbnail_div.decompose()
             story.promo_items = PromoItems(arc_id_for_image).to_dict()
-        if not story.promo_items:
-            del story.promo_items
 
         field_video_div = full_article_soup.find("div", class_="field-video")
 
@@ -94,6 +92,8 @@ class ArcSyncStory:
             print(f"Created Arc Video with _id = {response_create_arc_video_dict['_id']}")
             bc_video_count = bc_video_count + 1
 
+            story.promo_items = PromoItems(video_ans.get_id(), 'lead_art', 'video').to_dict()
+
         # self.save_image_to_local_storage(highest_quality_url, video_name)
 
         content_elements = parser.generate_ans(str(body_html))
@@ -112,6 +112,10 @@ class ArcSyncStory:
         response_story_delete = self.api_request.delete_arc_story(story.get_id())
 
         story.content_elements = content_elements;
+
+        if not story.promo_items:
+            del story.promo_items
+
         response_post = self.api_request.create_arc_story(story)
         response_data = json.loads(response_post)
 
