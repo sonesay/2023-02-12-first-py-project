@@ -3,6 +3,7 @@ import os
 import re
 import sys
 from collections import namedtuple
+from pprint import pprint
 
 import requests
 from bs4 import BeautifulSoup
@@ -28,12 +29,13 @@ class ArcSyncStory:
                                             os.environ.get('BRIGHTCOVE_CLIENT_API_ID'),
                                             os.environ.get('BRIGHTCOVE_CLIENT_SECRET'))
 
-    def sync_story(self, row, column_names):
+    def process_article_body_and_sync_story(self, row, column_names):
         cursor = self.db_conn.conn.cursor()
         row_dict = {column_names[i]: value for i, value in enumerate(row)}
         NewsArticle = namedtuple('NewsArticle', column_names)
         news_article = NewsArticle(*row)
-
+        bc_video_count = 0
+        yt_video_count = 0
         headlines = Headlines(news_article.title)
         story = Story("story", "0.10.9", "teaomaori", headlines)
 
@@ -55,35 +57,44 @@ class ArcSyncStory:
         body_div = full_article_soup.find("div", class_="field-body", itemprop="articleBody")
         body_html = ''.join(str(c) for c in body_div.contents)
 
-        video_div = full_article_soup.find('video', {'class': 'video-js'})
-        video_id = video_div['data-video-id']
-        print(video_id)
+        video_div = full_article_soup.find('video', {'class': 'video-js'}) or None
+        if video_div:
 
-        self.api_brightcove.authorize()
+            video_id = video_div['data-video-id']
+            print(video_id)
+            self.api_brightcove.authorize()
+            video_detail = self.api_brightcove.get_video(video_id)
+            video_name = re.sub(r'\W+', ' ', video_detail['name']).strip()
+            video_name = re.sub(r'\s+', '_', video_name)
 
-        video_detail = self.api_brightcove.get_video(video_id)
-        # video_name = video_detail['name']
-        video_name = re.sub(r'\W+', ' ', video_detail['name']).strip()
-        video_name = re.sub(r'\s+', '_', video_name)
+            video_data = self.api_brightcove.get_video_sources(video_id)
+            mp4_data = [d for d in video_data if d.get('container') == 'MP4']
+            sorted_mp4_data = sorted(mp4_data, key=lambda d: d.get('encoding_rate', 0), reverse=True)
+            highest_quality_url = sorted_mp4_data[0]['src']
+            video_extension = sorted_mp4_data[0]['container'].split('.')[-1]
 
-        video_data = self.api_brightcove.get_video_sources(video_id)
+            if feature_media_url is None:
+                feature_media_url = news_article.featured_image
 
-        mp4_data = [d for d in video_data if d.get('container') == 'MP4']
+            video_ans = ArcVideoANS("sample", row_dict['title'], feature_media_url, highest_quality_url,
+                                    video_extension, True)
 
-        sorted_mp4_data = sorted(mp4_data, key=lambda d: d.get('encoding_rate', 0), reverse=True)
+            # self.api_request.get_arc_video('f3f68db5-2906-4195-bf35-4890a304c047')
+            # print(vars(video_ans))
+            # content_json = json.dumps(video_ans, default=lambda o: o.__dict__)
+            # pretty_json = json.dumps(content_json, indent=4)
+            # print(pretty_json)
 
-        highest_quality_url = sorted_mp4_data[0]['src']
+            pprint(video_ans.to_dict())
 
-        video_ans = ArcVideoANS("sample", "test headline", feature_media_url, highest_quality_url)
+            # sys.exit()
 
-        self.api_request.get_arc_video('f3f68db5-2906-4195-bf35-4890a304c047')
-        self.api_request.create_arc_video(video_ans)
+            response_create_arc_video = self.api_request.create_arc_video(video_ans)
+            response_create_arc_video_dict = json.loads(response_create_arc_video)
+            print(f"Created Arc Video with _id = {response_create_arc_video_dict['_id']}")
+            bc_video_count = bc_video_count + 1
 
-        response = requests.get(highest_quality_url)
-        os.makedirs('./videos', exist_ok=True)
-
-        with open(f'./videos/{video_name}', 'wb') as f:
-            f.write(response.content)
+        # self.save_image_to_local_storage(highest_quality_url, video_name)
 
         content_elements = parser.generate_ans(str(body_html))
 
@@ -106,9 +117,25 @@ class ArcSyncStory:
 
         if 'id' in response_data:
             arc_id = response_data['id']
-            cursor.execute("UPDATE news_article_syncs SET arc_id=? WHERE id=?", (arc_id, row_dict['id']))
+            response_update = cursor.execute("UPDATE news_article_syncs SET arc_id=?, bc_video_count=? WHERE id=?",
+                                             (arc_id, bc_video_count, row_dict['id']))
+            self.db_conn.conn.commit()
+            if response_update.rowcount == 1:
+                print("Update successful")
+            else:
+                print("Update failed")
+
             print(f"Story created successfully with ID {arc_id}")
+
+            print(f"Row ID: {row_dict['id']}")
             print(f"Link: {row_dict['link']}")
+            print(f"bc_video_count: {bc_video_count}")
         else:
             error_message = response_data.get('message', 'Unknown error')
             print(f"Failed to create story: {error_message}")
+
+    def save_image_to_local_storage(self, highest_quality_url, video_name):
+        response = requests.get(highest_quality_url)
+        os.makedirs('./videos', exist_ok=True)
+        with open(f'./videos/{video_name}', 'wb') as f:
+            f.write(response.content)

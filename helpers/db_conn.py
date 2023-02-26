@@ -20,7 +20,7 @@ class DbConn:
         else:
             return None
 
-    def set_article(self, category, title, published_date, author, page, request_url, link):
+    def set_article(self, category, title, published_date, author, page, request_url, link, featured_image_src):
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # check if record already exists
         self.cursor.execute(
@@ -40,7 +40,7 @@ class DbConn:
             if page is None:
                 page = 0
             self.cursor.execute(
-                f"INSERT INTO news_article_syncs (category, title, published_date, author, page, request_url, link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (category, title, published_date, author, page or 0, request_url, link, now, now)
+                f"INSERT INTO news_article_syncs (category, title, published_date, author, page, request_url, link, featured_image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (category, title, published_date, author, page or 0, request_url, link, featured_image_src, now, now)
             )
             self.conn.commit()

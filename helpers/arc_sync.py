@@ -23,7 +23,7 @@ class ArcSync:
         rows = cursor.fetchall()
         column_names = [d[0] for d in cursor.description]
         for row in rows:
-            self.arc_sync_story.sync_story(row, column_names)
+            self.arc_sync_story.process_article_body_and_sync_story(row, column_names)
 
     def delete_migration_test_images(self):
         migration_images = self.api_request.get_migration_test_images()

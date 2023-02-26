@@ -33,7 +33,13 @@ class WebScraperArticleReference:
             # extract article link
             link = article.find("a", itemprop="mainEntityOfPage")['href']
 
-            self.db_conn.set_article(category, title, published_date, author, page, full_url, link)
+            thumbnail_div = article.select_one("div.field-thumbnail-override")
+            if thumbnail_div:
+                featured_image_src = thumbnail_div.find("img").get("src")
+            else:
+                featured_image_src = ""
+
+            self.db_conn.set_article(category, title, published_date, author, page, full_url, link, featured_image_src)
 
             print(f"Processed article: {published_date} - {title} - by {author} ")
 
