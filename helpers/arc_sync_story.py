@@ -13,6 +13,7 @@ from html2ans.default import Html2Ans
 from helpers.api_brightcove import APIBrightcove
 from helpers.arc_id_generator import generate_arc_id
 from models.arc_video_ans import ArcVideoANS
+from models.circulate_ans import WebsiteSection, CirculateANS
 from models.content_element_image import ContentElementImage
 from models.promo_items import PromoItems
 from models.story import Headlines, Story
@@ -107,11 +108,7 @@ class ArcSyncStory:
         if tags_list is not None:
             story.set_seo_keywords(tags_list)
             for tag in tags_list:
-                # print(tag)
                 story.add_story_tag(tag)
-
-        # for tag in tags_list:
-        #     story.set_seo_keywords(tag)
 
         story.content_elements = content_elements;
 
@@ -138,6 +135,19 @@ class ArcSyncStory:
         else:
             error_message = response_data.get('message', 'Unknown error')
             print(f"Failed to create story: {error_message}")
+
+        website_primary_section = WebsiteSection('/en/national').to_dict()
+        website_sections = [
+            WebsiteSection('/en/national').to_dict(),
+            WebsiteSection('/en/regional').to_dict()
+        ]
+
+        circulate_ans = CirculateANS(story.get_id(), website_primary_section, website_sections)
+
+        response_circulate = self.api_request.create_arc_circulation(story.get_id(), circulate_ans)
+
+        circulate_dict = circulate_ans.to_dict()
+        print(circulate_dict)
 
     def save_image_to_local_storage(self, highest_quality_url, video_name):
         response = requests.get(highest_quality_url)

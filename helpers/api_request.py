@@ -66,6 +66,13 @@ class APIRequest:
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         return response.text
 
+    def create_arc_circulation(self, arc_story_id, content):
+        website = os.environ.get('CANONICAL_WEBSITE')
+        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/{arc_story_id}/circulation/{website}'
+        content_json = json.dumps(content, default=lambda o: o.__dict__)
+        response = requests.put(end_point, headers=self.headers, data=content_json, verify=True)
+        return response.text
+
     def delete_arc_video(self, arc_id):
         end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/video/{arc_id}'
         response = requests.delete(end_point, headers=self.headers, verify=True)
