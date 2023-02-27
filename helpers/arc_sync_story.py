@@ -99,8 +99,6 @@ class ArcSyncStory:
                 content_element_image = ContentElementImage(arc_id_for_image)
                 content_elements[i] = content_element_image.__dict__
 
-        response_delete = self.api_request.delete_arc_story(news_article)
-
         response_story_delete = self.api_request.delete_arc_story(story.get_id())
 
         tags_list = self.db_conn.get_tags_by_id(row_dict['id'])

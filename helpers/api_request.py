@@ -15,15 +15,6 @@ class APIRequest:
             'Content-Type': 'application/json'
         }
 
-    def delete_arc_story(self, news_article):
-        if news_article.arc_id is not None:
-            end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/{news_article.arc_id}'
-            response = requests.delete(end_point, headers=self.headers, verify=True)
-            return response.text
-        else:
-            # Handle the case where arc_id is None
-            return False
-
     def delete_arc_story(self, arc_id):
         end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/{arc_id}'
         response = requests.delete(end_point, headers=self.headers, verify=True)
