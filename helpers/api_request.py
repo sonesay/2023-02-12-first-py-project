@@ -24,6 +24,11 @@ class APIRequest:
             # Handle the case where arc_id is None
             return False
 
+    def delete_arc_story(self, arc_id):
+        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/{arc_id}'
+        response = requests.delete(end_point, headers=self.headers, verify=True)
+        return response.text
+
     def create_arc_story(self, content):
         end_point = "https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story"
         content_json = json.dumps(content, default=lambda o: o.__dict__)
@@ -47,11 +52,6 @@ class APIRequest:
 
     def delete_arc_image(self, image_id):
         end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos/{image_id}'
-        response = requests.delete(end_point, headers=self.headers, verify=True)
-        return response.text
-
-    def delete_arc_story(self, arc_id):
-        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/{arc_id}'
         response = requests.delete(end_point, headers=self.headers, verify=True)
         return response.text
 

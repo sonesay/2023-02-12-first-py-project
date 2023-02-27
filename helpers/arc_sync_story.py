@@ -76,16 +76,7 @@ class ArcSyncStory:
 
             video_ans = ArcVideoANS("sample", row_dict['title'], feature_media_url, highest_quality_url,
                                     video_extension, True)
-
-            # self.api_request.get_arc_video('f3f68db5-2906-4195-bf35-4890a304c047')
-            # print(vars(video_ans))
-            # content_json = json.dumps(video_ans, default=lambda o: o.__dict__)
-            # pretty_json = json.dumps(content_json, indent=4)
-            # print(pretty_json)
-
-            pprint(video_ans.to_dict())
-
-            # sys.exit()
+            # pprint(video_ans.to_dict())
 
             response_create_arc_video = self.api_request.create_arc_video(video_ans)
             response_create_arc_video_dict = json.loads(response_create_arc_video)
@@ -111,6 +102,17 @@ class ArcSyncStory:
 
         response_story_delete = self.api_request.delete_arc_story(story.get_id())
 
+        tags_list = self.db_conn.get_tags_by_id(row_dict['id'])
+
+        if tags_list is not None:
+            story.set_seo_keywords(tags_list)
+            for tag in tags_list:
+                # print(tag)
+                story.add_story_tag(tag)
+
+        # for tag in tags_list:
+        #     story.set_seo_keywords(tag)
+
         story.content_elements = content_elements;
 
         if not story.promo_items:
@@ -118,7 +120,6 @@ class ArcSyncStory:
 
         response_post = self.api_request.create_arc_story(story)
         response_data = json.loads(response_post)
-
         if 'id' in response_data:
             arc_id = response_data['id']
             response_update = cursor.execute("UPDATE news_article_syncs SET arc_id=?, bc_video_count=? WHERE id=?",

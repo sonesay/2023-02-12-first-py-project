@@ -44,3 +44,13 @@ class DbConn:
                 (category, title, published_date, author, page or 0, request_url, link, featured_image_src, now, now)
             )
             self.conn.commit()
+
+    def get_tags_by_id(self, id):
+        self.cursor.execute("SELECT tags FROM news_article_syncs WHERE id = ?", (id,))
+        row = self.cursor.fetchone()
+        if row is not None:
+            tags_str = row[0]
+            tags_list = tags_str.split(", ")
+            return tags_list
+        else:
+            return None
