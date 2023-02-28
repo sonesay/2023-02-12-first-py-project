@@ -90,6 +90,13 @@ class ArcSyncStory:
 
         # self.save_image_to_local_storage(highest_quality_url, video_name)
 
+        iframe = full_article_soup.find('iframe', {'src': lambda s: 'youtube.com' in s})
+        if iframe:
+            print('Found YouTube video iframe:', iframe)
+            yt_video_count = yt_video_count + 1
+        else:
+            print('No YouTube video iframe found')
+
         content_elements = parser.generate_ans(str(body_html))
 
         # Loop through the content elements and replace images with references to Arc
@@ -119,8 +126,9 @@ class ArcSyncStory:
         response_data = json.loads(response_create_arc_story)
         if 'id' in response_data:
             arc_id = response_data['id']
-            response_update = cursor.execute("UPDATE news_article_syncs SET arc_id=?, bc_video_count=? WHERE id=?",
-                                             (arc_id, bc_video_count, row_dict['id']))
+            response_update = cursor.execute(
+                "UPDATE news_article_syncs SET arc_id=?, bc_video_count=?, yt_video_count=? WHERE id=?",
+                (arc_id, bc_video_count, yt_video_count, row_dict['id']))
             self.db_conn.conn.commit()
             if response_update.rowcount == 1:
                 print("Update successful")

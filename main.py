@@ -14,6 +14,7 @@ if __name__ == '__main__':
     # scraper.scrape_full_article_page()
 
     # Step 3
+    arc_sync.delete_migration_test_images()
     arc_sync.sync_stories_to_arc()
 
     # Step 4
