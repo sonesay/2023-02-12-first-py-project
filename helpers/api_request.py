@@ -10,18 +10,19 @@ class APIRequest:
     def __init__(self):
         load_dotenv()  # load the .env file
         self.api_key = os.environ.get('API_KEY')
+        self.api_host = os.environ.get('API_HOST')
         self.headers = {
             'Authorization': f'Bearer {self.api_key}',
             'Content-Type': 'application/json'
         }
 
     def delete_arc_story(self, arc_id):
-        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/{arc_id}'
+        end_point = f'{self.api_host}/draft/v1/story/{arc_id}'
         response = requests.delete(end_point, headers=self.headers, verify=True)
         return response.text
 
     def create_arc_story(self, content):
-        end_point = "https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story"
+        end_point = f'{self.api_host}/draft/v1/story'
         content_json = json.dumps(content, default=lambda o: o.__dict__)
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         response_text = response.text
@@ -38,7 +39,7 @@ class APIRequest:
             },
         }
         image = Image(arc_id, data)
-        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos/{image.get_id()}'
+        end_point = f'{self.api_host}/photo/api/v2/photos/{image.get_id()}'
         content_json = json.dumps(image, default=lambda o: o.__dict__)
         # response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         try:
@@ -62,34 +63,34 @@ class APIRequest:
         return response.text
 
     def delete_arc_image(self, image_id):
-        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos/{image_id}'
+        end_point = f'{self.api_host}/photo/api/v2/photos/{image_id}'
         response = requests.delete(end_point, headers=self.headers, verify=True)
         return response.text
 
     def get_arc_video(self, arc_id):
-        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/api/v1/ansvideos/{arc_id}'
+        end_point = f'{self.api_host}/api/v1/ansvideos/{arc_id}'
         response = requests.get(end_point, headers=self.headers, verify=True)
         return response.text
 
     def create_arc_video(self, content):
-        end_point = "https://api.sandbox.whakaatamaori.arcpublishing.com/goldfish/video/v2/import/ans?encode=true"
+        end_point = "{self.api_host}/goldfish/video/v2/import/ans?encode=true"
         content_json = json.dumps(content, default=lambda o: o.__dict__)
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         return response.text
 
     def create_arc_circulation(self, arc_story_id, content):
         website = os.environ.get('CANONICAL_WEBSITE')
-        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/story/{arc_story_id}/circulation/{website}'
+        end_point = f'{self.api_host}/draft/v1/story/{arc_story_id}/circulation/{website}'
         content_json = json.dumps(content, default=lambda o: o.__dict__)
         response = requests.put(end_point, headers=self.headers, data=content_json, verify=True)
         return response.text
 
     def delete_arc_video(self, arc_id):
-        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/draft/v1/video/{arc_id}'
+        end_point = f'{self.api_host}/draft/v1/video/{arc_id}'
         response = requests.delete(end_point, headers=self.headers, verify=True)
         return response.text
 
     def get_migration_test_images(self):
-        end_point = f'https://api.sandbox.whakaatamaori.arcpublishing.com/photo/api/v2/photos?keywords=migration'
+        end_point = f'{self.api_host}/photo/api/v2/photos?keywords=migration'
         response = requests.get(end_point, headers=self.headers, verify=True)
         return response.text
