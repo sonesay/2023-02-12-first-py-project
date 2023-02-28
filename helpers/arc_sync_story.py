@@ -12,6 +12,7 @@ from html2ans.default import Html2Ans
 
 from helpers.api_brightcove import APIBrightcove
 from helpers.arc_id_generator import generate_arc_id
+from helpers.arc_iframe_parser import ArcIframeParser
 from models.arc_video_ans import ArcVideoANS
 from models.circulate_ans import WebsiteSection, CirculateANS
 from models.content_element_image import ContentElementImage
@@ -41,6 +42,7 @@ class ArcSyncStory:
         story = Story("story", "0.10.9", "teaomaori", headlines)
 
         parser = Html2Ans()
+        parser.insert_parser('h4', ArcIframeParser(), 0)
         full_article_soup = BeautifulSoup(row_dict['body'], 'html.parser')
 
         thumbnail_div = full_article_soup.find("div", class_="field-thumbnail-override")
@@ -113,8 +115,8 @@ class ArcSyncStory:
         if not story.promo_items:
             del story.promo_items
 
-        response_post = self.api_request.create_arc_story(story)
-        response_data = json.loads(response_post)
+        response_create_arc_story = self.api_request.create_arc_story(story)
+        response_data = json.loads(response_create_arc_story)
         if 'id' in response_data:
             arc_id = response_data['id']
             response_update = cursor.execute("UPDATE news_article_syncs SET arc_id=?, bc_video_count=? WHERE id=?",
