@@ -14,8 +14,11 @@ class WebScraperArticleBody:
 
         # cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NULL ORDER BY id ASC LIMIT 1;")
 
-        cursor.execute(
-            "SELECT * FROM news_article_syncs WHERE link IN ('https://www.teaomaori.news/east-coast-jobs-could-flower-kanuka-oil','https://www.teaomaori.news/new-plymouth-mayor-iwi-determined-see-toxic-dioxon-contaminated-whenua-fixed','https://www.teaomaori.news/wahine-maori-and-husband-join-relief-efforts-following-turkey-earthquake-turkey','https://www.teaomaori.news/rnz-tvnz-merger-scrapped','https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours') LIMIT 1;")
+        test_query1 = "SELECT * FROM news_article_syncs WHERE link IN ('https://www.teaomaori.news/east-coast-jobs-could-flower-kanuka-oil', 'https://www.teaomaori.news/new-plymouth-mayor-iwi-determined-see-toxic-dioxon-contaminated-whenua-fixed', 'https://www.teaomaori.news/wahine-maori-and-husband-join-relief-efforts-following-turkey-earthquake-turkey', 'https://www.teaomaori.news/rnz-tvnz-merger-scrapped', 'https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours')"
+        cursor.execute(test_query1)
+        # cursor.execute(
+        #     "SELECT * FROM news_article_syncs WHERE link IN ('https://www.teaomaori.news/east-coast-jobs-could-flower-kanuka-oil','https://www.teaomaori.news/new-plymouth-mayor-iwi-determined-see-toxic-dioxon-contaminated-whenua-fixed','https://www.teaomaori.news/wahine-maori-and-husband-join-relief-efforts-following-turkey-earthquake-turkey','https://www.teaomaori.news/rnz-tvnz-merger-scrapped','https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours') LIMIT 1;")
+        
         rows = cursor.fetchall()
         column_names = [d[0] for d in cursor.description]
 

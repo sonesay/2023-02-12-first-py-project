@@ -19,6 +19,7 @@ class ArcSync:
     def sync_stories_to_arc(self):
         cursor = self.db_conn.conn.cursor()
         # cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NOT NULL AND arc_id IS NULL")
+        # cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NOT NULL LIMIT 1")
         cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NOT NULL LIMIT 1")
         # cursor.execute(
         #     "SELECT * FROM news_article_syncs WHERE link = 'https://www.teaomaori.news/karekare-welfare-mission-include-trauma-counselling'")

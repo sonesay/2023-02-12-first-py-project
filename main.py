@@ -7,6 +7,9 @@ if __name__ == '__main__':
     scraper = WebScraper()
     arc_sync = ArcSync()
 
+    # Step 0
+    arc_sync.delete_migration_test_images()
+
     # Step 1
     # scraper.process_english_categories()
 
@@ -14,8 +17,4 @@ if __name__ == '__main__':
     # scraper.scrape_full_article_page()
 
     # Step 3
-    arc_sync.delete_migration_test_images()
     arc_sync.sync_stories_to_arc()
-
-    # Step 4
-    # arc_sync.delete_migration_test_images()
