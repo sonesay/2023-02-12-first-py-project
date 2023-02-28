@@ -48,7 +48,7 @@ class ArcSyncStory:
         thumbnail_div = full_article_soup.find("div", class_="field-thumbnail-override")
         feature_media_url = thumbnail_div.find('img')['src'] if thumbnail_div else None
         arc_id_for_image = generate_arc_id(os.environ.get('API_KEY'), feature_media_url)
-        feature_media_upload_response = self.api_request.save_arc_image(arc_id_for_image, feature_media_url)
+        feature_media_upload_response = self.api_request.create_arc_image(arc_id_for_image, feature_media_url)
         if thumbnail_div:
             thumbnail_div.decompose()
             story.promo_items = PromoItems(arc_id_for_image).to_dict()
@@ -97,7 +97,7 @@ class ArcSyncStory:
             if content_elements[i]['type'] == 'image':
                 image_url = content_elements[i]['url']
                 arc_id_for_image = generate_arc_id(os.environ.get('API_KEY'), image_url)
-                feature_media_upload_response = self.api_request.save_arc_image(arc_id_for_image, image_url)
+                feature_media_upload_response = self.api_request.create_arc_image(arc_id_for_image, image_url)
                 content_element_image = ContentElementImage(arc_id_for_image)
                 content_elements[i] = content_element_image.__dict__
 
