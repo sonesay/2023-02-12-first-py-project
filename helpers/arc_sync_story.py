@@ -144,10 +144,10 @@ class ArcSyncStory:
             error_message = response_data.get('message', 'Unknown error')
             print(f"Failed to create story: {error_message}")
 
-        website_primary_section = WebsiteSection('/en/national').to_dict()
+        website_primary_section = WebsiteSection(row_dict['category']).to_dict()
         website_sections = [
-            WebsiteSection('/en/national').to_dict(),
-            WebsiteSection('/en/regional').to_dict()
+            WebsiteSection(row_dict['category']).to_dict(),
+            # WebsiteSection('/en/regional').to_dict()
         ]
 
         circulate_ans = CirculateANS(story.get_id(), website_primary_section, website_sections)

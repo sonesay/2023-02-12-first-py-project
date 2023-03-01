@@ -5,7 +5,6 @@ from helpers.web_scrapper import WebScraper
 if __name__ == '__main__':
     scraper = WebScraper()
     arc_sync = ArcSync()
-    api_request = APIRequest()
 
     # Step 0
     # arc_sync.delete_migration_test_images()
@@ -17,4 +16,4 @@ if __name__ == '__main__':
     # scraper.scrape_full_article_page()
 
     # Step 3
-    # arc_sync.sync_stories_to_arc()
+    arc_sync.sync_stories_to_arc()

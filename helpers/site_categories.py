@@ -54,7 +54,8 @@ class SiteCategories:
         sql_statement = "\n".join(updates)
         print(sql_statement)
 
-    def output_site_sections(self):
+    @staticmethod
+    def output_site_sections():
         site_list_str = api_request.get_site_sections()
         site_list = json.loads(site_list_str)
         language_list = site_list.get('children', [])
