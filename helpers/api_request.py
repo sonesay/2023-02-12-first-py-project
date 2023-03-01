@@ -94,3 +94,8 @@ class APIRequest:
         end_point = f'{self.api_host}/photo/api/v2/photos?keywords=migration'
         response = requests.get(end_point, headers=self.headers, verify=True)
         return response.text
+
+    def get_site_sections(self):
+        end_point = f'{self.api_host}/site/v3/navigation/teaomaori'
+        response = requests.get(end_point, headers=self.headers, verify=True)
+        return response.text
