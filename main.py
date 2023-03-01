@@ -6,6 +6,15 @@ if __name__ == '__main__':
     scraper = WebScraper()
     arc_sync = ArcSync()
 
+    test_urls = [
+        # 'https://www.teaomaori.news/east-coast-jobs-could-flower-kanuka-oil',
+        # 'https://www.teaomaori.news/new-plymouth-mayor-iwi-determined-see-toxic-dioxon-contaminated-whenua-fixed',
+        # 'https://www.teaomaori.news/wahine-maori-and-husband-join-relief-efforts-following-turkey-earthquake-turkey',
+        # 'https://www.teaomaori.news/rnz-tvnz-merger-scrapped',
+        # 'https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours',
+        'https://www.teaomaori.news/one-missing-boats-torn-moorings-on-aotea-great-barrier-island'
+    ]
+
     # Step 0
     # arc_sync.delete_migration_test_images()
 
@@ -13,7 +22,7 @@ if __name__ == '__main__':
     # scraper.process_english_categories()
 
     # Step 2
-    # scraper.scrape_full_article_page()
+    # scraper.scrape_full_article_page(test_urls)
 
     # Step 3
-    arc_sync.sync_stories_to_arc()
+    arc_sync.sync_stories_to_arc(test_urls)

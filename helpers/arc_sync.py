@@ -16,14 +16,14 @@ class ArcSync:
         self.api_request = APIRequest()
         self.arc_sync_story = ArcSyncStory()
 
-    def sync_stories_to_arc(self):
+    def sync_stories_to_arc(self, test_urls=None):
         cursor = self.db_conn.conn.cursor()
-        # cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NOT NULL AND arc_id IS NULL")
-        # cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NOT NULL LIMIT 1")
-        cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NOT NULL LIMIT 1")
-        # cursor.execute(
-        #     "SELECT * FROM news_article_syncs WHERE link = 'https://www.teaomaori.news/karekare-welfare-mission-include-trauma-counselling'")
+        if test_urls:
+            url_clause = "WHERE link IN ({})".format(",".join([f"'{url}'" for url in test_urls]))
+        else:
+            url_clause = "WHERE body IS NOT NULL LIMIT 1"
 
+        cursor.execute(f"SELECT * FROM news_article_syncs {url_clause}")
         rows = cursor.fetchall()
         column_names = [d[0] for d in cursor.description]
         for row in rows:

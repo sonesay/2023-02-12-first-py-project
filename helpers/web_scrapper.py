@@ -19,5 +19,5 @@ class WebScraper:
             else:
                 self.article_reference_scraper.get_news_article_references_from_url(category, url)
 
-    def scrape_full_article_page(self):
-        self.article_body_scraper.scrap_article_body_contents()
+    def scrape_full_article_page(self, test_urls=None):
+        self.article_body_scraper.scrap_article_body_contents(test_urls)

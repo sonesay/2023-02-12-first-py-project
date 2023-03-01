@@ -6,19 +6,17 @@ class WebScraperArticleBody:
     def __init__(self, db_conn):
         self.db_conn = db_conn
 
-    def scrap_article_body_contents(self):
+    def scrap_article_body_contents(self, test_urls=None):
         cursor = self.db_conn.conn.cursor()
 
-        # cursor.execute(
-        # "SELECT * FROM news_article_syncs WHERE link = 'https://www.teaomaori.news/push-more-maori-and-pasifika-wahine-aviation'")
+        if test_urls:
+            url_clause = "WHERE link IN ({})".format(",".join([f"'{url}'" for url in test_urls]))
+        else:
+            url_clause = "WHERE body IS NULL"
 
-        # cursor.execute("SELECT * FROM news_article_syncs WHERE body IS NULL ORDER BY id ASC LIMIT 1;")
+        query = f"SELECT * FROM news_article_syncs {url_clause}"
+        cursor.execute(query)
 
-        test_query1 = "SELECT * FROM news_article_syncs WHERE link IN ('https://www.teaomaori.news/east-coast-jobs-could-flower-kanuka-oil', 'https://www.teaomaori.news/new-plymouth-mayor-iwi-determined-see-toxic-dioxon-contaminated-whenua-fixed', 'https://www.teaomaori.news/wahine-maori-and-husband-join-relief-efforts-following-turkey-earthquake-turkey', 'https://www.teaomaori.news/rnz-tvnz-merger-scrapped', 'https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours')"
-        cursor.execute(test_query1)
-        # cursor.execute(
-        #     "SELECT * FROM news_article_syncs WHERE link IN ('https://www.teaomaori.news/east-coast-jobs-could-flower-kanuka-oil','https://www.teaomaori.news/new-plymouth-mayor-iwi-determined-see-toxic-dioxon-contaminated-whenua-fixed','https://www.teaomaori.news/wahine-maori-and-husband-join-relief-efforts-following-turkey-earthquake-turkey','https://www.teaomaori.news/rnz-tvnz-merger-scrapped','https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours') LIMIT 1;")
-        
         rows = cursor.fetchall()
         column_names = [d[0] for d in cursor.description]
 
