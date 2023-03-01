@@ -6,7 +6,7 @@ class CirculateANS:
         self.document_id = document_id
         self.website_id = os.environ.get('CANONICAL_WEBSITE')
         # self.website_url = os.environ.get('WEBSITE_URL')
-        self.website_url = '/en'
+        # self.website_url = '/en'
         self.website_primary_section = website_primary_section
         self.website_sections = website_sections
 
@@ -14,7 +14,7 @@ class CirculateANS:
         return {
             "document_id": self.document_id,
             "website_id": self.website_id,
-            "website_url": self.website_url,
+            # "website_url": self.website_url,
             "website_primary_section": self.website_primary_section,
             "website_sections": self.website_sections
         }
