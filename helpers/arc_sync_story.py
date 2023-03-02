@@ -169,9 +169,3 @@ class ArcSyncStory:
 
         circulate_dict = circulate_ans.to_dict()
         print(circulate_dict)
-
-    def save_image_to_local_storage(self, highest_quality_url, video_name):
-        response = requests.get(highest_quality_url)
-        os.makedirs('./videos', exist_ok=True)
-        with open(f'./videos/{video_name}', 'wb') as f:
-            f.write(response.content)
