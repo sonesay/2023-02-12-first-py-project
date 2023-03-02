@@ -29,6 +29,11 @@ class ArcSync:
         for row in rows:
             self.arc_sync_story.process_article_body_and_sync_story(row, column_names)
 
+    def sync_authors_to_arc(self):
+        authors = self.db_conn.get_distinct_authors()
+        for author in authors:
+
+
     def delete_migration_test_images(self):
         migration_images = self.api_request.get_migration_test_images()
         images_data = json.loads(migration_images)

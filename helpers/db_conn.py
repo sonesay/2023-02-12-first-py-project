@@ -69,3 +69,11 @@ class DbConn:
             (author_id, record_id)
         )
         self.conn.commit()
+
+    def get_distinct_authors(self):
+        self.cursor.execute("SELECT DISTINCT author FROM news_article_syncs")
+        rows = self.cursor.fetchall()
+        authors = []
+        for row in rows:
+            authors.append(row[0])
+        return authors
