@@ -54,3 +54,10 @@ class DbConn:
             return tags_list
         else:
             return None
+
+    def update_author_id(self, record_id, author_id):
+        self.cursor.execute(
+            "UPDATE news_article_syncs SET author_id = ? WHERE id = ?",
+            (author_id, record_id)
+        )
+        self.conn.commit()

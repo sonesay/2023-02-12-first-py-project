@@ -7,7 +7,7 @@ from html2ans.default import Html2Ans
 from helpers.api_request import APIRequest
 from helpers.arc_sync_story import ArcSyncStory
 from helpers.db_conn import DbConn
-from models.story import Headlines, Story
+from models.arc_story_ans import Headlines, ArcStoryANS
 
 
 class ArcSync:

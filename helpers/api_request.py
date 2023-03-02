@@ -73,7 +73,13 @@ class APIRequest:
         return response.text
 
     def create_arc_video(self, content):
-        end_point = "{self.api_host}/goldfish/video/v2/import/ans?encode=true"
+        end_point = f"{self.api_host}/goldfish/video/v2/import/ans?encode=true"
+        content_json = json.dumps(content, default=lambda o: o.__dict__)
+        response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
+        return response.text
+
+    def create_arc_author(self, content):
+        end_point = f'{self.api_host}/author/v2/author-service'
         content_json = json.dumps(content, default=lambda o: o.__dict__)
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         return response.text

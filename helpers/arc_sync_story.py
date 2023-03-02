@@ -13,11 +13,12 @@ from html2ans.default import Html2Ans
 from helpers.api_brightcove import APIBrightcove
 from helpers.arc_id_generator import generate_arc_id
 from helpers.arc_iframe_parser import ArcIframeParser
+from models.arc_author_ans import ArcAuthorANS
 from models.arc_video_ans import ArcVideoANS
 from models.circulate_ans import WebsiteSection, CirculateANS
 from models.content_element_image import ContentElementImage
 from models.promo_items import PromoItems
-from models.story import Headlines, Story
+from models.arc_story_ans import Headlines, ArcStoryANS
 from helpers.api_request import APIRequest
 from helpers.db_conn import DbConn
 
@@ -39,7 +40,8 @@ class ArcSyncStory:
         bc_video_count = 0
         yt_video_count = 0
         headlines = Headlines(news_article.title)
-        story = Story("story", "0.10.9", "teaomaori", headlines)
+        arc_story_ans = ArcStoryANS("story", "0.10.9", "teaomaori", headlines)
+        arc_story_ans.set_source_id(row_dict['link'])
 
         parser = Html2Ans()
         parser.insert_parser('h4', ArcIframeParser(), 0)
@@ -51,7 +53,7 @@ class ArcSyncStory:
         feature_media_upload_response = self.api_request.create_arc_image(arc_id_for_image, feature_media_url)
         if thumbnail_div:
             thumbnail_div.decompose()
-            story.promo_items = PromoItems(arc_id_for_image).to_dict()
+            arc_story_ans.promo_items = PromoItems(arc_id_for_image).to_dict()
 
         field_video_div = full_article_soup.find("div", class_="field-video")
 
@@ -81,12 +83,15 @@ class ArcSyncStory:
                                     video_extension, True)
             # pprint(video_ans.to_dict())
 
-            response_create_arc_video = self.api_request.create_arc_video(video_ans)
-            response_create_arc_video_dict = json.loads(response_create_arc_video)
-            print(f"Created Arc Video with _id = {response_create_arc_video_dict['_id']}")
-            bc_video_count = bc_video_count + 1
+            try:
+                response_create_arc_video = self.api_request.create_arc_video(video_ans)
+                response_create_arc_video_dict = json.loads(response_create_arc_video)
+                print(f"Created Arc Video with _id = {response_create_arc_video_dict['_id']}")
+                bc_video_count = bc_video_count + 1
+            except Exception as e:
+                print(f"Error creating Arc Video: {e}")
 
-            story.promo_items = PromoItems(video_ans.get_id(), 'lead_art', 'video').to_dict()
+            arc_story_ans.promo_items = PromoItems(video_ans.get_id(), 'lead_art', 'video').to_dict()
 
         # self.save_image_to_local_storage(highest_quality_url, video_name)
 
@@ -108,21 +113,27 @@ class ArcSyncStory:
                 content_element_image = ContentElementImage(arc_id_for_image)
                 content_elements[i] = content_element_image.__dict__
 
-        response_story_delete = self.api_request.delete_arc_story(story.get_id())
+        response_story_delete = self.api_request.delete_arc_story(arc_story_ans.get_id())
 
         tags_list = self.db_conn.get_tags_by_id(row_dict['id'])
 
         if tags_list is not None:
-            story.set_seo_keywords(tags_list)
+            arc_story_ans.set_seo_keywords(tags_list)
             for tag in tags_list:
-                story.add_story_tag(tag)
+                arc_story_ans.add_story_tag(tag)
 
-        story.content_elements = content_elements;
+        arc_story_ans.content_elements = content_elements;
 
-        if not story.promo_items:
-            del story.promo_items
+        if not arc_story_ans.promo_items:
+            del arc_story_ans.promo_items
 
-        response_create_arc_story = self.api_request.create_arc_story(story)
+        first_name, last_name = row_dict['author'].split(' ')
+        author_ans = ArcAuthorANS(first_name, last_name)
+        response_create_author = self.api_request.create_arc_author(author_ans)
+
+        arc_story_ans.add_credits_author(author_ans.get_id())
+
+        response_create_arc_story = self.api_request.create_arc_story(arc_story_ans)
         response_data = json.loads(response_create_arc_story)
         if 'id' in response_data:
             arc_id = response_data['id']
@@ -150,9 +161,9 @@ class ArcSyncStory:
             # WebsiteSection('/en/regional').to_dict()
         ]
 
-        circulate_ans = CirculateANS(story.get_id(), website_primary_section, website_sections)
+        circulate_ans = CirculateANS(arc_story_ans.get_id(), website_primary_section, website_sections)
 
-        response_circulate = self.api_request.create_arc_circulation(story.get_id(), circulate_ans)
+        response_circulate = self.api_request.create_arc_circulation(arc_story_ans.get_id(), circulate_ans)
 
         circulate_dict = circulate_ans.to_dict()
         print(circulate_dict)

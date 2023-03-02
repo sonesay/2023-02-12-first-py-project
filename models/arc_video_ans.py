@@ -63,3 +63,9 @@ class ArcVideoANS:
 
     def get_id(self):
         return self._id
+
+# Add source property
+# "source": {
+#     "system": "brightcove",
+#     "source_id": "123456889"
+#   },
