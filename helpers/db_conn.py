@@ -55,6 +55,14 @@ class DbConn:
         else:
             return None
 
+    def get_categories_by_link(self, link):
+        self.cursor.execute("SELECT category FROM news_article_syncs WHERE link = ?", (link,))
+        rows = self.cursor.fetchall()
+        categories = []
+        for row in rows:
+            categories.append(row[0])
+        return categories
+
     def update_author_id(self, record_id, author_id):
         self.cursor.execute(
             "UPDATE news_article_syncs SET author_id = ? WHERE id = ?",

@@ -95,8 +95,6 @@ class ArcSyncStory:
 
             arc_story_ans.promo_items = PromoItems(video_ans.get_id(), 'lead_art', 'video').to_dict()
 
-        # self.save_image_to_local_storage(highest_quality_url, video_name)
-
         iframe = full_article_soup.find('iframe', {'src': lambda s: 'youtube.com' in s})
         if iframe:
             print('Found YouTube video iframe:', iframe)
@@ -136,9 +134,22 @@ class ArcSyncStory:
         arc_story_ans.add_credits_author(author_ans.get_id())
 
         response_create_arc_story = self.api_request.create_arc_story(arc_story_ans)
-        response_data = json.loads(response_create_arc_story)
-        if 'id' in response_data:
-            arc_id = response_data['id']
+
+        self.update_article_row_details(cursor, response_create_arc_story, row_dict, bc_video_count, yt_video_count)
+
+        website_primary_section = WebsiteSection(row_dict['category']).to_dict()
+        website_sections = []
+        for section in self.db_conn.get_categories_by_link(row_dict['link']):
+            website_sections.append(WebsiteSection(section).to_dict())
+
+        circulate_ans = CirculateANS(arc_story_ans.get_id(), website_primary_section, website_sections)
+
+        response_circulate = self.api_request.create_arc_circulation(arc_story_ans.get_id(), circulate_ans)
+
+    def update_article_row_details(self, cursor, response_create_arc_story, row_dict, bc_video_count, yt_video_count):
+        response_create_arc_story_data = json.loads(response_create_arc_story)
+        if 'id' in response_create_arc_story_data:
+            arc_id = response_create_arc_story_data['id']
             response_update = cursor.execute(
                 "UPDATE news_article_syncs SET arc_id=?, bc_video_count=?, yt_video_count=? WHERE id=?",
                 (arc_id, bc_video_count, yt_video_count, row_dict['id']))
@@ -154,18 +165,5 @@ class ArcSyncStory:
             print(f"Link: {row_dict['link']}")
             print(f"bc_video_count: {bc_video_count}")
         else:
-            error_message = response_data.get('message', 'Unknown error')
+            error_message = response_create_arc_story_data.get('message', 'Unknown error')
             print(f"Failed to create story: {error_message}")
-
-        website_primary_section = WebsiteSection(row_dict['category']).to_dict()
-        website_sections = [
-            WebsiteSection(row_dict['category']).to_dict(),
-            # WebsiteSection('/en/regional').to_dict()
-        ]
-
-        circulate_ans = CirculateANS(arc_story_ans.get_id(), website_primary_section, website_sections)
-
-        response_circulate = self.api_request.create_arc_circulation(arc_story_ans.get_id(), circulate_ans)
-
-        circulate_dict = circulate_ans.to_dict()
-        print(circulate_dict)
