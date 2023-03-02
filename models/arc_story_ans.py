@@ -3,17 +3,17 @@ from helpers.arc_id_generator import generate_arc_id
 
 
 class ArcStoryANS:
-    def __init__(self, ans_type, version, canonical_website, headlines):
-        self._id = generate_arc_id(canonical_website, headlines.basic)
+    def __init__(self, ans_type, version, canonical_website):
+        self._id = generate_arc_id(canonical_website)
         self.type = ans_type
         self.version = version
         self.canonical_website = canonical_website
-        self.headlines = headlines
         self.content_elements = []
         self.promo_items = []
         self.taxonomy = {}
         self.source = {"system": "Drupal"}
         self.credits = {"by": []}
+        self.headlines = None
 
     def get_id(self):
         return self._id
@@ -46,19 +46,10 @@ class ArcStoryANS:
             "type": "reference"
         })
 
+    def set_headlines(self, basic):
+        self.headlines = Headlines(basic)
+
 
 class Headlines:
     def __init__(self, basic):
         self.basic = html.unescape(basic).replace('�', '')
-
-# "source": {
-#             "name": "whakaatamaori",
-#             "source_type": "staff",
-#             "system": ""
-#         },
-
-# Add old system ID
-# "source": {
-#     "system": "myoldcms",
-#     "source_id": "story_id_123"
-#   },

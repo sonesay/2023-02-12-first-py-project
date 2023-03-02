@@ -31,6 +31,13 @@ class ArcSyncStory:
         self.api_brightcove = APIBrightcove(os.environ.get('BRIGHTCOVE_ACCOUNT_ID'),
                                             os.environ.get('BRIGHTCOVE_CLIENT_API_ID'),
                                             os.environ.get('BRIGHTCOVE_CLIENT_SECRET'))
+        self._arc_story_ans = None
+
+    @property
+    def arc_story_ans(self):
+        if self._arc_story_ans is None:
+            self._arc_story_ans = ArcStoryANS("story", "0.10.9", "teaomaori")
+        return self._arc_story_ans
 
     def process_article_body_and_sync_story(self, row, column_names):
         cursor = self.db_conn.conn.cursor()
@@ -40,11 +47,10 @@ class ArcSyncStory:
         bc_video_count = 0
         yt_video_count = 0
 
-        headlines = Headlines(news_article.title)
-        arc_story_ans = ArcStoryANS("story", "0.10.9", "teaomaori", headlines)
-        arc_story_ans.set_source_id(row_dict['link'])
+        self.arc_story_ans.set_headlines(news_article.title)
+        self.arc_story_ans.set_source_id(row_dict['link'])
 
-        response_existing_arc_story = self.api_request.get_arc_story(arc_story_ans.get_id())
+        response_existing_arc_story = self.api_request.get_arc_story(self.arc_story_ans.get_id())
         response_existing_arc_story_json = json.loads(response_existing_arc_story)
         if 'id' in response_existing_arc_story_json:
             print(f"Skipping sync for existing Arc story with ID {response_existing_arc_story_json['id']}")
@@ -62,7 +68,7 @@ class ArcSyncStory:
             feature_media_upload_response = self.api_request.create_arc_image(arc_id_for_image, feature_media_url)
         if thumbnail_div:
             thumbnail_div.decompose()
-            arc_story_ans.promo_items = PromoItems(arc_id_for_image).to_dict()
+            self.arc_story_ans.promo_items = PromoItems(arc_id_for_image).to_dict()
 
         field_video_div = full_article_soup.find("div", class_="field-video")
 
@@ -100,7 +106,7 @@ class ArcSyncStory:
             except Exception as e:
                 print(f"Error creating Arc Video: {e}")
 
-            arc_story_ans.promo_items = PromoItems(video_ans.get_id(), 'lead_art', 'video').to_dict()
+            self.arc_story_ans.promo_items = PromoItems(video_ans.get_id(), 'lead_art', 'video').to_dict()
 
         iframe = full_article_soup.find('iframe', {'src': lambda s: 'youtube.com' in s})
         if iframe:
@@ -120,27 +126,27 @@ class ArcSyncStory:
                 content_element_image = ContentElementImage(arc_id_for_image)
                 content_elements[i] = content_element_image.__dict__
 
-        response_story_delete = self.api_request.delete_arc_story(arc_story_ans.get_id())
+        response_story_delete = self.api_request.delete_arc_story(self.arc_story_ans.get_id())
 
         tags_list = self.db_conn.get_tags_by_id(row_dict['id'])
 
         if tags_list is not None:
-            arc_story_ans.set_seo_keywords(tags_list)
+            self.arc_story_ans.set_seo_keywords(tags_list)
             for tag in tags_list:
-                arc_story_ans.add_story_tag(tag)
+                self.arc_story_ans.add_story_tag(tag)
 
-        arc_story_ans.content_elements = content_elements;
+        self.arc_story_ans.content_elements = content_elements;
 
-        if not arc_story_ans.promo_items:
-            del arc_story_ans.promo_items
+        if not self.arc_story_ans.promo_items:
+            del self.arc_story_ans.promo_items
 
         first_name, last_name = row_dict['author'].split(' ')
         author_ans = ArcAuthorANS(first_name, last_name)
         response_create_author = self.api_request.create_arc_author(author_ans)
 
-        arc_story_ans.add_credits_author(author_ans.get_id())
+        self.arc_story_ans.add_credits_author(author_ans.get_id())
 
-        response_create_arc_story = self.api_request.create_arc_story(arc_story_ans)
+        response_create_arc_story = self.api_request.create_arc_story(self.arc_story_ans)
 
         self.update_article_row_details(cursor, response_create_arc_story, row_dict, bc_video_count, yt_video_count)
 
@@ -149,9 +155,9 @@ class ArcSyncStory:
         for section in self.db_conn.get_categories_by_link(row_dict['link']):
             website_sections.append(WebsiteSection(section).to_dict())
 
-        circulate_ans = CirculateANS(arc_story_ans.get_id(), website_primary_section, website_sections)
+        circulate_ans = CirculateANS(self.arc_story_ans.get_id(), website_primary_section, website_sections)
 
-        response_circulate = self.api_request.create_arc_circulation(arc_story_ans.get_id(), circulate_ans)
+        response_circulate = self.api_request.create_arc_circulation(self.arc_story_ans.get_id(), circulate_ans)
 
     def update_article_row_details(self, cursor, response_create_arc_story, row_dict, bc_video_count, yt_video_count):
         response_create_arc_story_data = json.loads(response_create_arc_story)
