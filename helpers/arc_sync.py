@@ -7,6 +7,7 @@ from html2ans.default import Html2Ans
 from helpers.api_request import APIRequest
 from helpers.arc_sync_story import ArcSyncStory
 from helpers.db_conn import DbConn
+from models.arc_author_ans import ArcAuthorANS
 from models.arc_story_ans import Headlines, ArcStoryANS
 
 
@@ -32,7 +33,13 @@ class ArcSync:
     def sync_authors_to_arc(self):
         authors = self.db_conn.get_distinct_authors()
         for author in authors:
-
+            if len(author.split(' ')) == 2:
+                first_name, last_name = author.split(' ')
+            else:
+                first_name, last_name = author, ''
+            author_ans = ArcAuthorANS(first_name, last_name)
+            response_create_author = self.api_request.create_arc_author(author_ans)
+            print(f"Response from creating author {author}: {response_create_author}")
 
     def delete_migration_test_images(self):
         migration_images = self.api_request.get_migration_test_images()
