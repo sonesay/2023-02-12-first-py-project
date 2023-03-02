@@ -21,6 +21,11 @@ class APIRequest:
         response = requests.delete(end_point, headers=self.headers, verify=True)
         return response.text
 
+    def get_arc_story(self, arc_story_id):
+        end_point = f'{self.api_host}/draft/v1/story/{arc_story_id}'
+        response = requests.get(end_point, headers=self.headers, verify=True)
+        return response.text
+
     def create_arc_story(self, content):
         end_point = f'{self.api_host}/draft/v1/story'
         content_json = json.dumps(content, default=lambda o: o.__dict__)

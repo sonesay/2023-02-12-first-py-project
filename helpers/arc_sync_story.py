@@ -39,9 +39,16 @@ class ArcSyncStory:
         news_article = NewsArticle(*row)
         bc_video_count = 0
         yt_video_count = 0
+
         headlines = Headlines(news_article.title)
         arc_story_ans = ArcStoryANS("story", "0.10.9", "teaomaori", headlines)
         arc_story_ans.set_source_id(row_dict['link'])
+
+        response_existing_arc_story = self.api_request.get_arc_story(arc_story_ans.get_id())
+        response_existing_arc_story_json = json.loads(response_existing_arc_story)
+        if 'id' in response_existing_arc_story_json:
+            print(f"Skipping sync for existing Arc story with ID {response_existing_arc_story_json['id']}")
+            return
 
         parser = Html2Ans()
         parser.insert_parser('h4', ArcIframeParser(), 0)
