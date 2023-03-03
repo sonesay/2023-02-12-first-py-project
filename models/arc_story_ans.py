@@ -1,13 +1,15 @@
 import html
+import os
+
 from helpers.arc_id_generator import generate_arc_id
 
 
 class ArcStoryANS:
-    def __init__(self, ans_type, version, canonical_website):
-        self._id = generate_arc_id(canonical_website)
-        self.type = ans_type
-        self.version = version
-        self.canonical_website = canonical_website
+    def __init__(self, title):
+        self._id = generate_arc_id(title, "story")
+        self.type = "story"
+        self.version = "0.10.9"
+        self.canonical_website = os.environ.get('CANONICAL_WEBSITE')
         self.content_elements = []
         self.promo_items = []
         self.taxonomy = {}

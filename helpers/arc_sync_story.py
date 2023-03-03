@@ -35,8 +35,6 @@ class ArcSyncStory:
 
     @property
     def arc_story_ans(self):
-        if self._arc_story_ans is None:
-            self._arc_story_ans = ArcStoryANS("story", "0.10.9", "teaomaori")
         return self._arc_story_ans
 
     def process_article_body_and_sync_story(self, row, column_names):
@@ -47,6 +45,7 @@ class ArcSyncStory:
         bc_video_count = 0
         yt_video_count = 0
 
+        self._arc_story_ans = ArcStoryANS(news_article.title)
         self.arc_story_ans.set_headlines(news_article.title)
         self.arc_story_ans.set_source_id(row_dict['link'])
 
