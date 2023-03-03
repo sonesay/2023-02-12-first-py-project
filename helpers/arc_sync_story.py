@@ -54,7 +54,7 @@ class ArcSyncStory:
         response_existing_arc_story_json = json.loads(response_existing_arc_story)
         if 'id' in response_existing_arc_story_json:
             print(f"Skipping sync for existing Arc story with ID {response_existing_arc_story_json['id']}")
-            return
+            # return
 
         parser = Html2Ans()
         parser.insert_parser('h4', ArcIframeParser(), 0)
@@ -140,10 +140,10 @@ class ArcSyncStory:
         if not self.arc_story_ans.promo_items:
             del self.arc_story_ans.promo_items
 
-        # first_name, last_name = row_dict['author'].split(' ')
-        # author_ans = ArcAuthorANS(first_name, last_name)
+        first_name, last_name = row_dict['author'].split(' ')
+        author_ans = ArcAuthorANS(first_name, last_name)
         # response_create_author = self.api_request.create_arc_author(author_ans)
-        # self.arc_story_ans.add_credits_author(author_ans.get_id())
+        self.arc_story_ans.add_credits_author(author_ans.get_id())
 
         response_create_arc_story = self.api_request.create_arc_story(self.arc_story_ans)
 

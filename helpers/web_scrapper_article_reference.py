@@ -41,9 +41,9 @@ class WebScraperArticleReference:
 
             self.db_conn.set_article(category, title, published_date, author, page, full_url, link, featured_image_src)
 
-            print(f"Processed article: {published_date} - {title} - by {author} ")
+            print(f"Processed {category} category: Article: {published_date} - {title} - by {author} ")
 
-        print(f"Processed {category} category with data: {len(articles)} articles")
+        print(f"Processed {category} category: Total: {len(articles)} Articles")
 
         # Check if there are more articles to process
         show_more_results_button = soup.select_one("#show-more-results-button a")
