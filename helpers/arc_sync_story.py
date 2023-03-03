@@ -50,11 +50,13 @@ class ArcSyncStory:
         self.arc_story_ans.set_headlines(news_article.title)
         self.arc_story_ans.set_source_id(row_dict['link'])
 
+        print(news_article.title)
+
         response_existing_arc_story = self.api_request.get_arc_story(self.arc_story_ans.get_id())
         response_existing_arc_story_json = json.loads(response_existing_arc_story)
         if 'id' in response_existing_arc_story_json:
             print(f"Skipping sync for existing Arc story with ID {response_existing_arc_story_json['id']}")
-            # return
+            return
 
         parser = Html2Ans()
         parser.insert_parser('h4', ArcIframeParser(), 0)
