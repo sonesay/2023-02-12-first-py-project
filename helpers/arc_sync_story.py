@@ -55,7 +55,7 @@ class ArcSyncStory:
         response_existing_arc_story_json = json.loads(response_existing_arc_story)
         if 'id' in response_existing_arc_story_json:
             print(f"Skipping sync for existing Arc story with ID {response_existing_arc_story_json['id']}")
-            return
+            # return
 
         parser = Html2Ans()
         parser.insert_parser('h4', ArcIframeParser(), 0)
@@ -141,12 +141,26 @@ class ArcSyncStory:
         if not self.arc_story_ans.promo_items:
             del self.arc_story_ans.promo_items
 
-        first_name, last_name = row_dict['author'].split(' ')
+        author_name = row_dict['author']
+        if ' ' in author_name:
+            first_name, last_name = author_name.split(' ')
+        else:
+            first_name, last_name = author_name, ''
         author_ans = ArcAuthorANS(first_name, last_name)
         # response_create_author = self.api_request.create_arc_author(author_ans)
         self.arc_story_ans.add_credits_author(author_ans.get_id())
 
-        response_create_arc_story = self.api_request.create_arc_story(self.arc_story_ans)
+        public_interest_journalism = full_article_soup.find('img', alt=lambda
+            x: x and 'Public Interest Journalism' in x) or None
+        if public_interest_journalism:
+            self.arc_story_ans.set_subtype("Public Interest Journalism")
+
+        mailto_tag = full_article_soup.find('a', href='mailto:openjustice@nzme.co.nz')
+        img_tag = full_article_soup.find('img', src=lambda x: x and 'OPEN-JUSTICE_ONLINE.jpg' in x)
+        if mailto_tag is not None or img_tag is not None:
+            self.arc_story_ans.set_subtype("Open Justice")
+
+        response_create_arc_story = self.api_request.create_arc_story(self.arc_story_ans.to_dict())
 
         self.update_article_row_details(cursor, response_create_arc_story, row_dict, bc_video_count, yt_video_count)
 

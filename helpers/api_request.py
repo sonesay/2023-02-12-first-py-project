@@ -29,6 +29,7 @@ class APIRequest:
     def create_arc_story(self, content):
         end_point = f'{self.api_host}/draft/v1/story'
         content_json = json.dumps(content, default=lambda o: o.__dict__)
+        # content_json = json.dumps(content)
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         response_text = response.text
         print(f"Creating Arc Story response: {response_text}")

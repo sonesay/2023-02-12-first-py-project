@@ -16,6 +16,7 @@ class ArcStoryANS:
         self.source = {"system": "Drupal"}
         self.credits = {"by": []}
         self.headlines = None
+        self.subtype = None
 
     def get_id(self):
         return self._id
@@ -50,6 +51,12 @@ class ArcStoryANS:
 
     def set_headlines(self, basic):
         self.headlines = Headlines(basic)
+
+    def set_subtype(self, subtype):
+        self.subtype = subtype
+
+    def to_dict(self):
+        return {k: v for k, v in self.__dict__.items() if v is not None and k != "subtype"}
 
 
 class Headlines:
