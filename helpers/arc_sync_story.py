@@ -128,19 +128,8 @@ class ArcSyncStory:
                 content_elements[i] = content_element_image.__dict__
 
         response_story_delete = self.api_request.delete_arc_story(self.arc_story_ans.get_id())
-
-        tags_list = self.db_conn.get_tags_by_id(row_dict['id'])
-
-        if tags_list is not None:
-            self.arc_story_ans.set_seo_keywords(tags_list)
-            for tag in tags_list:
-                self.arc_story_ans.add_story_tag(tag)
-                if tag == 'Open Justice':
-                    self.arc_story_ans.set_subtype('Open Justice')
-                elif tag == 'Public Interest Journalism':
-                    self.arc_story_ans.set_subtype('Public Interest Journalism')
-                elif tag == 'Te Rito':
-                    self.arc_story_ans.set_subtype('Te Rito')
+        
+        self.process_tags_list(self.db_conn.get_tags_by_id(row_dict['id']))
 
         self.arc_story_ans.content_elements = content_elements;
 
@@ -178,6 +167,18 @@ class ArcSyncStory:
         circulate_ans = CirculateANS(self.arc_story_ans.get_id(), website_primary_section, website_sections)
 
         response_circulate = self.api_request.create_arc_circulation(self.arc_story_ans.get_id(), circulate_ans)
+
+    def process_tags_list(self, tags_list):
+        if tags_list is not None:
+            self.arc_story_ans.set_seo_keywords(tags_list)
+            for tag in tags_list:
+                self.arc_story_ans.add_story_tag(tag)
+                if tag == 'Open Justice':
+                    self.arc_story_ans.set_subtype('Open Justice')
+                elif tag == 'Public Interest Journalism':
+                    self.arc_story_ans.set_subtype('Public Interest Journalism')
+                elif tag == 'Te Rito':
+                    self.arc_story_ans.set_subtype('Te Rito')
 
     def update_article_row_details(self, cursor, response_create_arc_story, row_dict, bc_video_count, yt_video_count):
         response_create_arc_story_data = json.loads(response_create_arc_story)
