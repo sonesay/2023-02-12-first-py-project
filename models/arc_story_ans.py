@@ -56,7 +56,22 @@ class ArcStoryANS:
         self.subtype = subtype
 
     def to_dict(self):
-        return {k: v for k, v in self.__dict__.items() if v is not None and k != "subtype"}
+        result = {
+            "type": self.type,
+            "version": self.version,
+            "canonical_website": self.canonical_website,
+            "content_elements": self.content_elements,
+            "promo_items": self.promo_items,
+            "taxonomy": self.taxonomy,
+            "source": self.source,
+            "credits": self.credits,
+            "headlines": self.headlines,
+        }
+
+        if self.subtype is not None:
+            result["subtype"] = self.subtype
+
+        return result
 
 
 class Headlines:
