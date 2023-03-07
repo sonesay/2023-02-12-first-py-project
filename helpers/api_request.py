@@ -107,6 +107,16 @@ class APIRequest:
         response = requests.get(end_point, headers=self.headers, verify=True)
         return response.text
 
+    def get_migration_test_stories(self):
+        end_point = f"{self.api_host}/content/v4/search"
+        params = {
+            "website": "teaomaori",
+            "q": 'type:"story" AND source.system:"Drupal"',
+            "_sourceInclude": "_id"
+        }
+        response = requests.get(end_point, headers=self.headers, params=params, verify=True)
+        return response.text
+
     def get_site_sections(self):
         end_point = f'{self.api_host}/site/v3/navigation/teaomaori'
         response = requests.get(end_point, headers=self.headers, verify=True)

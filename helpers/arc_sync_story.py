@@ -54,6 +54,8 @@ class ArcSyncStory:
         print(f"Arc Story ID: {arc_story_id}")
         print(f"Title: {news_article.title}")
 
+        response_story_delete = self.api_request.delete_arc_story(self.arc_story_ans.get_id())
+
         response_existing_arc_story = self.api_request.get_arc_story(self.arc_story_ans.get_id())
         response_existing_arc_story_json = json.loads(response_existing_arc_story)
         if 'id' in response_existing_arc_story_json:
@@ -130,7 +132,7 @@ class ArcSyncStory:
                 content_element_image = ContentElementImage(arc_id_for_image)
                 content_elements[i] = content_element_image.__dict__
 
-        response_story_delete = self.api_request.delete_arc_story(self.arc_story_ans.get_id())
+        # response_story_delete = self.api_request.delete_arc_story(self.arc_story_ans.get_id())
 
         self.process_tags_list(self.db_conn.get_tags_by_id(row_dict['id']))
 

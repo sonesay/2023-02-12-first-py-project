@@ -53,3 +53,15 @@ class ArcSync:
             else:
                 print(f"Failed to delete image with ID {image_id}.")
                 print(f"Response from API: {response}")
+
+    def delete_migration_test_stories(self):
+        migration_stories = self.api_request.get_migration_test_stories()
+        stories_data = json.loads(migration_stories)
+        ids = [_id['_id'] for _id in stories_data['content_elements']]
+        for story_id in ids:
+            response = self.api_request.delete_arc_story(story_id)
+            if response == '':
+                print(f"Story with ID {story_id} has been successfully deleted.")
+            else:
+                print(f"Failed to delete Story with ID {story_id}.")
+                print(f"Response from API: {response}")
