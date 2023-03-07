@@ -18,11 +18,12 @@ class ArcSync:
         self.arc_sync_story = ArcSyncStory()
 
     def sync_stories_to_arc(self, test_urls=None):
+        # test_urls = None
         cursor = self.db_conn.conn.cursor()
         if test_urls:
             url_clause = "WHERE link IN ({})".format(",".join([f"'{url}'" for url in test_urls]))
         else:
-            url_clause = "WHERE body IS NOT NULL LIMIT 1"
+            url_clause = "WHERE body IS NOT NULL;"
 
         cursor.execute(f"SELECT * FROM news_article_syncs {url_clause}")
         rows = cursor.fetchall()

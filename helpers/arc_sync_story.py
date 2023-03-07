@@ -45,17 +45,20 @@ class ArcSyncStory:
         bc_video_count = 0
         yt_video_count = 0
 
-        self._arc_story_ans = ArcStoryANS(news_article.title)
+        arc_story_id = self.db_conn.get_arc_id_by_link(news_article.link)
+
+        self._arc_story_ans = ArcStoryANS(news_article.title, arc_story_id)
         self.arc_story_ans.set_headlines(news_article.title)
         self.arc_story_ans.set_source_id(row_dict['link'])
 
-        print(news_article.title)
+        print(f"Arc Story ID: {arc_story_id}")
+        print(f"Title: {news_article.title}")
 
         response_existing_arc_story = self.api_request.get_arc_story(self.arc_story_ans.get_id())
         response_existing_arc_story_json = json.loads(response_existing_arc_story)
         if 'id' in response_existing_arc_story_json:
             print(f"Skipping sync for existing Arc story with ID {response_existing_arc_story_json['id']}")
-            # return
+            return
 
         parser = Html2Ans()
         parser.insert_parser('h4', ArcIframeParser(), 0)
@@ -128,7 +131,7 @@ class ArcSyncStory:
                 content_elements[i] = content_element_image.__dict__
 
         response_story_delete = self.api_request.delete_arc_story(self.arc_story_ans.get_id())
-        
+
         self.process_tags_list(self.db_conn.get_tags_by_id(row_dict['id']))
 
         self.arc_story_ans.content_elements = content_elements;

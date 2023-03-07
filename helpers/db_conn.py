@@ -77,3 +77,12 @@ class DbConn:
         for row in rows:
             authors.append(row[0])
         return authors
+
+    def get_arc_id_by_link(self, link):
+        self.cursor.execute("SELECT arc_id FROM news_article_syncs WHERE link = ? AND arc_id IS NOT NULL LIMIT 1",
+                            (link,))
+        row = self.cursor.fetchone()
+        if row is not None:
+            return row[0]
+        else:
+            return None

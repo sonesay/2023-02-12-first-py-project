@@ -5,8 +5,11 @@ from helpers.arc_id_generator import generate_arc_id
 
 
 class ArcStoryANS:
-    def __init__(self, title):
-        self._id = generate_arc_id(title, "story")
+    def __init__(self, title, arc_story_id=None):
+        if arc_story_id is not None:
+            self._id = arc_story_id
+        else:
+            self._id = generate_arc_id(title)
         self.type = "story"
         self.version = "0.10.9"
         self.canonical_website = os.environ.get('CANONICAL_WEBSITE')
