@@ -60,6 +60,7 @@ class ArcStoryANS:
 
     def to_dict(self):
         result = {
+            "_id": self._id,
             "type": self.type,
             "version": self.version,
             "canonical_website": self.canonical_website,
