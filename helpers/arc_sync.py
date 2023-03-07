@@ -60,11 +60,11 @@ class ArcSync:
         ids = [_id['_id'] for _id in stories_data['content_elements']]
         for story_id in ids:
             response = self.api_request.delete_arc_story(story_id)
-            if response == '':
+            if "error_message" not in response:
                 print(f"DELETE::: Story with ID {story_id} has been successfully deleted.")
             else:
                 print(f"DELETE::: Failed to delete Story with ID {story_id}.")
-                print(f"DELETE::: Response from API: {response}")
+            print(f"DELETE::: Response from API: {response}")
 
     def test_get_site_sections(self):
         site_sections = self.api_request.get_site_sections()
