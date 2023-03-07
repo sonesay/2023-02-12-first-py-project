@@ -20,7 +20,6 @@ if __name__ == '__main__':
 
     # Step 0
     # arc_sync.delete_migration_test_images()
-    # arc_sync.delete_migration_test_images()
     arc_sync.delete_migration_test_stories()
 
     # Step 1
@@ -30,6 +29,6 @@ if __name__ == '__main__':
     # scraper.scrape_full_article_page(test_urls)
 
     # Step 3
-    # arc_sync.sync_stories_to_arc(test_urls)
+    arc_sync.sync_stories_to_arc(test_urls)
 
     # arc_sync.sync_authors_to_arc()
