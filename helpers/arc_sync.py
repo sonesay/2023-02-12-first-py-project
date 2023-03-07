@@ -65,3 +65,16 @@ class ArcSync:
             else:
                 print(f"Failed to delete Story with ID {story_id}.")
                 print(f"Response from API: {response}")
+
+    def test_get_site_sections(self):
+        site_sections = self.api_request.get_site_sections()
+        site_list = json.loads(site_sections)
+        language_list = site_list.get('children', [])
+        for language in language_list:
+            print(f"{language.get('_id', '')}: {language.get('name', '')}")
+            sections = language.get('children', [])
+            for section in sections:
+                print(f"  {section.get('_id', '')}: {section.get('name', '')}")
+                sub_sections = section.get('children', [])
+                for sub_section in sub_sections:
+                    print(f"    {sub_section.get('_id', '')}: {sub_section.get('name', '')}")
