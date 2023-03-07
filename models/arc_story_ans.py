@@ -9,7 +9,7 @@ class ArcStoryANS:
         if arc_story_id is not None:
             self._id = arc_story_id
         else:
-            self._id = generate_arc_id(title)
+            self._id = generate_arc_id(title, "story")
         self.type = "story"
         self.version = "0.10.9"
         self.canonical_website = os.environ.get('CANONICAL_WEBSITE')

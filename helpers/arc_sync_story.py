@@ -142,8 +142,6 @@ class ArcSyncStory:
                 content_element_image = ContentElementImage(arc_id_for_image)
                 content_elements[i] = content_element_image.__dict__
 
-        # response_story_delete = self.api_request.delete_arc_story(self.arc_story_ans.get_id())
-
         self.process_tags_list(self.db_conn.get_tags_by_id(row_dict['id']))
 
         self.arc_story_ans.content_elements = content_elements;
@@ -160,6 +158,7 @@ class ArcSyncStory:
 
         self.arc_story_ans.add_credits_author(author_ans.get_id())
 
+        # response_story_delete = self.api_request.delete_arc_story(self.arc_story_ans.get_id())
         response_create_arc_story = self.api_request.create_arc_story(self.arc_story_ans.to_dict())
 
         self.update_article_row_details(cursor, response_create_arc_story, row_dict, bc_video_count, yt_video_count)
