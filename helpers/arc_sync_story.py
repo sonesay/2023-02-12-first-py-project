@@ -76,6 +76,18 @@ class ArcSyncStory:
 
         field_video_div = full_article_soup.find("div", class_="field-video")
 
+        public_interest_journalism = full_article_soup.find('img', alt=lambda
+            x: x and 'Public Interest Journalism' in x) or None
+        if public_interest_journalism:
+            public_interest_journalism.decompose()
+
+        mailto_tag = full_article_soup.find('a', href='mailto:openjustice@nzme.co.nz')
+        img_tag = full_article_soup.find('img', src=lambda x: x and 'OPEN-JUSTICE_ONLINE.jpg' in x)
+        if mailto_tag is not None:
+            mailto_tag.decompose()
+        if img_tag is not None:
+            img_tag.decompose()
+
         body_div = full_article_soup.find("div", class_="field-body", itemprop="articleBody")
         body_html = ''.join(str(c) for c in body_div.contents)
 
@@ -147,16 +159,6 @@ class ArcSyncStory:
         author_ans = ArcAuthorANS(first_name, last_name)
 
         self.arc_story_ans.add_credits_author(author_ans.get_id())
-
-        # public_interest_journalism = full_article_soup.find('img', alt=lambda
-        #     x: x and 'Public Interest Journalism' in x) or None
-        # if public_interest_journalism:
-        #     self.arc_story_ans.set_subtype("Public Interest Journalism")
-        #
-        # mailto_tag = full_article_soup.find('a', href='mailto:openjustice@nzme.co.nz')
-        # img_tag = full_article_soup.find('img', src=lambda x: x and 'OPEN-JUSTICE_ONLINE.jpg' in x)
-        # if mailto_tag is not None or img_tag is not None:
-        #     self.arc_story_ans.set_subtype("Open Justice")
 
         response_create_arc_story = self.api_request.create_arc_story(self.arc_story_ans.to_dict())
 
