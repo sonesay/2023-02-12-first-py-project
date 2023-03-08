@@ -173,6 +173,8 @@ class ArcSyncStory:
 
         response_circulate = self.api_request.create_arc_circulation(self.arc_story_ans.get_id(), circulate_ans)
 
+        response_publish_arc_story = self.api_request.publish_arc_story(self.arc_story_ans.get_id())
+
     def process_tags_list(self, tags_list):
         if tags_list is not None:
             self.arc_story_ans.set_seo_keywords(tags_list)

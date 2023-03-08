@@ -13,15 +13,16 @@ if __name__ == '__main__':
         # 'https://www.teaomaori.news/rnz-tvnz-merger-scrapped',
         # 'https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours',
         # 'https://www.teaomaori.news/one-missing-boats-torn-moorings-on-aotea-great-barrier-island',
-        # 'https://www.teaomaori.news/police-dog-v-rangatahi-justified-ipca-says',
+        'https://www.teaomaori.news/police-dog-v-rangatahi-justified-ipca-says',
         # 'https://www.teaomaori.news/worried-auckland-coaches-and-players-national-maori-basketball-tournament',
-        'https://www.teaomaori.news/green-party-announces-daughter-north-te-tai-tokerau-candidate'
+        # 'https://www.teaomaori.news/green-party-announces-daughter-north-te-tai-tokerau-candidate'
     ]
 
     # Step 0
+    # arc_sync.sync_authors_to_arc()
+    # arc_sync.test_get_site_sections()
     arc_sync.delete_migration_test_images()
     arc_sync.delete_migration_test_stories()
-    # arc_sync.test_get_site_sections()
 
     # Step 1
     # scraper.process_english_categories()
@@ -31,5 +32,3 @@ if __name__ == '__main__':
 
     # Step 3
     arc_sync.sync_stories_to_arc(test_urls)
-
-    # arc_sync.sync_authors_to_arc()

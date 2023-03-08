@@ -120,3 +120,8 @@ class APIRequest:
         end_point = f'{self.api_host}/site/v3/navigation/teaomaori'
         response = requests.get(end_point, headers=self.headers, verify=True)
         return response.text
+
+    def publish_arc_story(self, arc_story_id):
+        end_point = f'{self.api_host}/draft/v1/story/{arc_story_id}/revision/published'
+        response = requests.post(end_point, headers=self.headers, verify=True)
+        return response.text

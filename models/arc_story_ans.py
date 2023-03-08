@@ -20,6 +20,11 @@ class ArcStoryANS:
         self.credits = {"by": []}
         self.headlines = None
         self.subtype = None
+        self.revision = {
+            # "branch": "default",
+            "published": True,
+            # "revision_id": generate_arc_id(title, "revision")
+        }
 
     def get_id(self):
         return self._id
@@ -70,6 +75,7 @@ class ArcStoryANS:
             "source": self.source,
             "credits": self.credits,
             "headlines": self.headlines,
+            # "revision": self.revision,
         }
 
         if self.subtype is not None:

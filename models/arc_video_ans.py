@@ -7,7 +7,7 @@ from helpers.arc_id_generator import generate_arc_id
 class ArcVideoANS:
     def __init__(self, video_category, headline, primary_section_id, promo_item_url, url, video_extension="mp4",
                  published=False):
-        self._id = generate_arc_id(os.environ.get('CANONICAL_WEBSITE'), headline)
+        self._id = generate_arc_id(headline, "video")
         self.type = "video"
         self.version = "0.8.0"
         self.owner = {"id": os.environ.get('OWNER_ID')}
