@@ -21,8 +21,8 @@ class ArcStoryANS:
         self.source = {"system": "Drupal"}
         self.credits = {"by": []}
         self.headlines = None
-        self.subtype = None,
-        self.display_date = None,
+        self.subtype = None
+        self.display_date = None
 
     def get_id(self):
         return self._id

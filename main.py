@@ -7,15 +7,15 @@ if __name__ == '__main__':
     arc_sync = ArcSync()
 
     test_urls = [
-        # 'https://www.teaomaori.news/east-coast-jobs-could-flower-kanuka-oil',
-        # 'https://www.teaomaori.news/new-plymouth-mayor-iwi-determined-see-toxic-dioxon-contaminated-whenua-fixed',
-        # 'https://www.teaomaori.news/wahine-maori-and-husband-join-relief-efforts-following-turkey-earthquake-turkey',
-        # 'https://www.teaomaori.news/rnz-tvnz-merger-scrapped',
-        # 'https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours',
-        # 'https://www.teaomaori.news/one-missing-boats-torn-moorings-on-aotea-great-barrier-island',
+        'https://www.teaomaori.news/east-coast-jobs-could-flower-kanuka-oil',
+        'https://www.teaomaori.news/new-plymouth-mayor-iwi-determined-see-toxic-dioxon-contaminated-whenua-fixed',
+        'https://www.teaomaori.news/wahine-maori-and-husband-join-relief-efforts-following-turkey-earthquake-turkey',
+        'https://www.teaomaori.news/rnz-tvnz-merger-scrapped',
+        'https://www.teaomaori.news/28th-maori-battalion-memorial-flag-finally-flies-battle-honours',
+        'https://www.teaomaori.news/one-missing-boats-torn-moorings-on-aotea-great-barrier-island',
         'https://www.teaomaori.news/police-dog-v-rangatahi-justified-ipca-says',
-        # 'https://www.teaomaori.news/worried-auckland-coaches-and-players-national-maori-basketball-tournament',
-        # 'https://www.teaomaori.news/green-party-announces-daughter-north-te-tai-tokerau-candidate'
+        'https://www.teaomaori.news/worried-auckland-coaches-and-players-national-maori-basketball-tournament',
+        'https://www.teaomaori.news/green-party-announces-daughter-north-te-tai-tokerau-candidate'
     ]
 
     # Step 0
