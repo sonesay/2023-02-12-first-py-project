@@ -47,25 +47,24 @@ class APIRequest:
         image = Image(arc_id, data)
         end_point = f'{self.api_host}/photo/api/v2/photos/{image.get_id()}'
         content_json = json.dumps(image, default=lambda o: o.__dict__)
-        # response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         try:
             response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
             response_json = response.json()
             if "error" in response_json:
                 if response_json["error"] == "Conflict":
                     if response_json.get("errorKey") == "CREATE_PHOTO_WITH_ID_ALREADY_EXISTS":
-                        print(f"Creating Arc Image - Error: {response_json['message']}")
+                        print(f" CREATE IMAGE::: Error: {response_json['message']}")
                 else:
-                    print(f"Error: {response_json['message']}")
+                    print(f" CREATE IMAGE::: Error: {response_json['message']}")
             else:
-                print("Image created successfully.")
+                print(" CREATE IMAGE::: Success:")
             return response.text
         except requests.exceptions.RequestException as e:
             error_message = e.response.json().get('message', 'Unknown error occurred')
             invalid_ids = e.response.json().get('invalid_ids')
             if invalid_ids:
-                print(f"Invalid IDs: {invalid_ids}")
-            print(f"Error message: {error_message}")
+                print(f" CREATE IMAGE::: Error: Invalid IDs: {invalid_ids}")
+            print(f" CREATE IMAGE::: Error: {error_message}")
         return response.text
 
     def delete_arc_image(self, image_id):

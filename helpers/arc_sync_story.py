@@ -110,17 +110,18 @@ class ArcSyncStory:
             if feature_media_url is None:
                 feature_media_url = news_article.featured_image
 
-            video_ans = ArcVideoANS("sample", row_dict['title'], feature_media_url, highest_quality_url,
+            video_ans = ArcVideoANS("sample", row_dict['title'], row_dict['category'], feature_media_url,
+                                    highest_quality_url,
                                     video_extension, True)
-            # pprint(video_ans.to_dict())
+            pprint(video_ans.to_dict())
 
             try:
                 response_create_arc_video = self.api_request.create_arc_video(video_ans)
                 response_create_arc_video_dict = json.loads(response_create_arc_video)
-                print(f"Created Arc Video with _id = {response_create_arc_video_dict['_id']}")
+                print(f" CREATE VIDEO::: Created Arc Video with _id = {response_create_arc_video_dict['_id']}")
                 bc_video_count = bc_video_count + 1
             except Exception as e:
-                print(f"Error creating Arc Video: {e}")
+                print(f" CREATE VIDEO::: Error: Error creating Arc Video: {e}")
 
             self.arc_story_ans.promo_items = PromoItems(video_ans.get_id(), 'lead_art', 'video').to_dict()
 
