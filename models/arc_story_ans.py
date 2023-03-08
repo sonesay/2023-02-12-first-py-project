@@ -76,7 +76,6 @@ class ArcStoryANS:
             "source": self.source,
             "credits": self.credits,
             "headlines": self.headlines,
-            # "display_date": "2022-01-01T03:44:40.55Z",
             "display_date": convert_date_string(self.display_date),
         }
 
@@ -92,21 +91,10 @@ class Headlines:
 
 
 def convert_date_string(date_string):
-    # Set the original and desired date formats
     original_date_format = '%Y-%m-%d %H:%M:%S'
     desired_date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
-
-    # Convert the input date string to a datetime object
     original_date = datetime.strptime(date_string, original_date_format)
-
-    # Convert the datetime object to the UTC timezone
     utc_timezone = pytz.timezone('UTC')
     original_date_utc = utc_timezone.localize(original_date)
-
-    # Format the datetime object to the desired date string
     desired_date_string = original_date_utc.strftime(desired_date_format)
-
-    desired_date_string = desired_date_string[:-5] + 'Z'
-
-    # Return the desired date string
     return desired_date_string
