@@ -50,6 +50,7 @@ class ArcSyncStory:
         self._arc_story_ans = ArcStoryANS(news_article.title, arc_story_id)
         self.arc_story_ans.set_headlines(news_article.title)
         self.arc_story_ans.set_source_id(row_dict['link'])
+        self.arc_story_ans.set_display_date(row_dict['published_date'])
 
         print(f"Arc Story ID: {arc_story_id}")
         print(f"Title: {news_article.title}")

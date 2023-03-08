@@ -16,20 +16,9 @@ class APIRequest:
             'Content-Type': 'application/json'
         }
 
-    def delete_arc_story(self, arc_id):
-        end_point = f'{self.api_host}/draft/v1/story/{arc_id}'
-        response = requests.delete(end_point, headers=self.headers, verify=True)
-        return response.text
-
-    def get_arc_story(self, arc_story_id):
-        end_point = f'{self.api_host}/draft/v1/story/{arc_story_id}'
-        response = requests.get(end_point, headers=self.headers, verify=True)
-        return response.text
-
     def create_arc_story(self, content):
         end_point = f'{self.api_host}/draft/v1/story'
         content_json = json.dumps(content, default=lambda o: o.__dict__)
-        # content_json = json.dumps(content)
         response = requests.post(end_point, headers=self.headers, data=content_json, verify=True)
         response_text = response.text
         print(f"Creating Arc Story response: {response_text}")
@@ -67,16 +56,6 @@ class APIRequest:
             print(f" CREATE IMAGE::: Error: {error_message}")
         return response.text
 
-    def delete_arc_image(self, image_id):
-        end_point = f'{self.api_host}/photo/api/v2/photos/{image_id}'
-        response = requests.delete(end_point, headers=self.headers, verify=True)
-        return response.text
-
-    def get_arc_video(self, arc_id):
-        end_point = f'{self.api_host}/api/v1/ansvideos/{arc_id}'
-        response = requests.get(end_point, headers=self.headers, verify=True)
-        return response.text
-
     def create_arc_video(self, content):
         end_point = f"{self.api_host}/goldfish/video/v2/import/ans?encode=true"
         content_json = json.dumps(content, default=lambda o: o.__dict__)
@@ -96,9 +75,14 @@ class APIRequest:
         response = requests.put(end_point, headers=self.headers, data=content_json, verify=True)
         return response.text
 
-    def delete_arc_video(self, arc_id):
-        end_point = f'{self.api_host}/draft/v1/video/{arc_id}'
-        response = requests.delete(end_point, headers=self.headers, verify=True)
+    def get_arc_story(self, arc_story_id):
+        end_point = f'{self.api_host}/draft/v1/story/{arc_story_id}'
+        response = requests.get(end_point, headers=self.headers, verify=True)
+        return response.text
+
+    def get_arc_video(self, arc_id):
+        end_point = f'{self.api_host}/api/v1/ansvideos/{arc_id}'
+        response = requests.get(end_point, headers=self.headers, verify=True)
         return response.text
 
     def get_migration_test_images(self):
@@ -124,4 +108,19 @@ class APIRequest:
     def publish_arc_story(self, arc_story_id):
         end_point = f'{self.api_host}/draft/v1/story/{arc_story_id}/revision/published'
         response = requests.post(end_point, headers=self.headers, verify=True)
+        return response.text
+
+    def delete_arc_image(self, image_id):
+        end_point = f'{self.api_host}/photo/api/v2/photos/{image_id}'
+        response = requests.delete(end_point, headers=self.headers, verify=True)
+        return response.text
+
+    def delete_arc_video(self, arc_id):
+        end_point = f'{self.api_host}/draft/v1/video/{arc_id}'
+        response = requests.delete(end_point, headers=self.headers, verify=True)
+        return response.text
+
+    def delete_arc_story(self, arc_id):
+        end_point = f'{self.api_host}/draft/v1/story/{arc_id}'
+        response = requests.delete(end_point, headers=self.headers, verify=True)
         return response.text
