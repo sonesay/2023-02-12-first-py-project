@@ -45,6 +45,11 @@ class ArcSyncStory:
         bc_video_count = 0
         yt_video_count = 0
 
+        print(f"DRUPAL ARTICLE: {row_dict['link']}")
+        if news_article.arc_id is not None:
+            print(f"Skipping sync for existing Arc story with ID: {news_article.arc_id}")
+            return
+
         arc_story_id = self.db_conn.get_arc_id_by_link(news_article.link)
 
         self._arc_story_ans = ArcStoryANS(news_article.title, arc_story_id)
@@ -65,14 +70,22 @@ class ArcSyncStory:
         parser.insert_parser('h4', ArcIframeParser(), 0)
         full_article_soup = BeautifulSoup(row_dict['body'], 'html.parser')
 
-        thumbnail_div = full_article_soup.find("div", class_="field-thumbnail-override")
-        feature_media_url = thumbnail_div.find('img')['src'] if thumbnail_div else None
+        # TODO: Tidy up this mess here when dealing with feature images.
+        field_thumbnail_override_div = full_article_soup.find("div", class_="field-thumbnail-override")
+        feature_media_url = field_thumbnail_override_div.find('img')['src'] if field_thumbnail_override_div else None
         arc_id_for_image = generate_arc_id(os.environ.get('API_KEY'), feature_media_url)
+
+        field_image_div = full_article_soup.find("div", class_="field-image")
+        if field_image_div is not None:
+            feature_media_url = field_image_div.find('img')['src']
+            field_image_div.decompose()
+            arc_id_for_image = generate_arc_id(os.environ.get('API_KEY'), feature_media_url)
+            self.arc_story_ans.promo_items = PromoItems(arc_id_for_image).to_dict()
 
         if feature_media_url is not None:
             feature_media_upload_response = self.api_request.create_arc_image(arc_id_for_image, feature_media_url)
-        if thumbnail_div:
-            thumbnail_div.decompose()
+        if field_thumbnail_override_div:
+            field_thumbnail_override_div.decompose()
             self.arc_story_ans.promo_items = PromoItems(arc_id_for_image).to_dict()
 
         field_video_div = full_article_soup.find("div", class_="field-video")
@@ -153,9 +166,12 @@ class ArcSyncStory:
 
         author_name = row_dict['author']
         if ' ' in author_name:
-            first_name, last_name = author_name.split(' ')
+            names = author_name.split(' ')
+            first_name = names[0]
+            last_name = ' '.join(names[1:])
         else:
-            first_name, last_name = author_name, ''
+            first_name = author_name
+            last_name = ''
         author_ans = ArcAuthorANS(first_name, last_name)
 
         self.arc_story_ans.add_credits_author(author_ans.get_id())
@@ -204,7 +220,7 @@ class ArcSyncStory:
             print(f"Story created successfully with ID {arc_id}")
 
             print(f"Row ID: {row_dict['id']}")
-            print(f"Link: {row_dict['link']}")
+            # print(f"Link: {row_dict['link']}")
             print(f"bc_video_count: {bc_video_count}")
         else:
             error_message = response_create_arc_story_data.get('message', 'Unknown error')
