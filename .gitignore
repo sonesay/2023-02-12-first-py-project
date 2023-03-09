@@ -3,3 +3,4 @@ helpers/__pycache__/
 models/__pycache__/
 .env
 videos/
+__pycache__/
