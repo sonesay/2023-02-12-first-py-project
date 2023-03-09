@@ -50,8 +50,11 @@ class DbConn:
         row = self.cursor.fetchone()
         if row is not None:
             tags_str = row[0]
-            tags_list = tags_str.split(", ")
-            return tags_list
+            if tags_str is not None:
+                tags_list = tags_str.split(", ")
+                return tags_list
+            else:
+                return None
         else:
             return None
 
