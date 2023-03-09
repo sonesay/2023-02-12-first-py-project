@@ -46,9 +46,9 @@ class ArcSyncStory:
         yt_video_count = 0
 
         print(f"DRUPAL ARTICLE: {row_dict['link']}")
-        if news_article.arc_id is not None:
-            print(f"Skipping sync for existing Arc story with ID: {news_article.arc_id}")
-            return
+        # if news_article.arc_id is not None:
+        #     print(f"Skipping sync for existing Arc story with ID: {news_article.arc_id}")
+        #     return
 
         arc_story_id = self.db_conn.get_arc_id_by_link(news_article.link)
 
